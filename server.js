@@ -1,7 +1,10 @@
-const express = require('express');
-const app = express();
-const port = 8080;
+const http = require('http');
+const app = require('./api/app'); // Assure-toi que ce chemin est correct
 
-app.listen(port, () =>{
-    console.log("Le serveur d'application écoute le port :" + port);
+const port = process.env.PORT || 8080;
+
+const server = http.createServer(app);
+
+server.listen(port, () => {
+    console.log(`Serveur démarré sur http://localhost:${port}`);
 });

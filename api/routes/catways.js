@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const private = require('../middlewares/private');
+
 const service = require('../services/catways');
 const reservationsRoutes = require('./reservations'); 
 

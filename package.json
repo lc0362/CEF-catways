@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "env-cmd -f ./env/.env nodemon ./bin/www",
-    "dev": "env-cmd -f ./env/.env.dev nodemon ./bin/www",
-    "prod": "env-cmd -f ./env/.env.prod nodemon ./bin/www"
+    "start": "env-cmd -f ./env/.env node server.js",
+    "dev": "env-cmd -f ./env/.env.dev nodemon server.js",
+    "prod": "env-cmd -f ./env/.env.prod node server.js"
   },
   "keywords": [],
   "author": "",
