@@ -34,7 +34,7 @@ exports.authenticate = async (req, res, next) => {
     }
   };
 
-exports.getAllcatways = (req, res) => {
+exports.getAllCatways = (req, res) => {
     res.json({ message: "Tous les catways" });
 };
 

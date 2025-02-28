@@ -34,24 +34,24 @@ exports.authenticate = async (req, res, next) => {
     }
   };
 
-exports.getAllcatways = (req, res) => {
-    res.json({ message: "Tous les catways" });
+exports.getAllReservations = (req, res) => {
+    res.json({ message: "Toutes les reservations" });
 };
 
-exports.getById = (req, res) => {
-    res.json({ message: `Catway ID: ${req.params.id}` });
+exports.getReservationById = (req, res) => {
+    res.json({ message: `Reservation ID: ${req.params.id}` });
 };
 
-exports.add = (req, res) => {
-    res.json({ message: "Catway ajouté !" });
+exports.addReservation = (req, res) => {
+    res.json({ message: "Reservation ajoutée !" });
 };
 
-exports.update = (req, res) => {
-    res.json({ message: `Catway ID: ${req.params.id} mis à jour !` });
+exports.updateReservation = (req, res) => {
+    res.json({ message: `Reservation ID: ${req.params.id} mise à jour !` });
 };
 
-exports.delete = (req, res) => {
-    res.json({ message: `Catway ID: ${req.params.id} supprimé !` });
+exports.deleteReservation = (req, res) => {
+    res.json({ message: `Reservations ID: ${req.params.id} supprimée !` });
 };
 
 exports.authenticate = (req, res) => {
