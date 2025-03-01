@@ -56,14 +56,33 @@ exports.getById = async (req, res) => {
 };
 
 exports.add = async (req, res) => {
-    try {
-        const newCatway = new Catway(req.body);
-        await newCatway.save();
-        res.status(201).json(newCatway);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+  try {
+      console.log("📌 Données reçues :", req.body);
+
+      let { catwayNumber, catwayType, catwayState } = req.body;
+
+      // Convertir catwayType en minuscule
+      catwayType = catwayType.toLowerCase();
+
+      if (!catwayNumber || !catwayType || !catwayState) {
+          return res.status(400).json({ error: "Tous les champs sont obligatoires" });
+      }
+
+      const existingCatway = await Catway.findOne({ catwayNumber });
+      if (existingCatway) {
+          return res.status(400).json({ error: "Ce catway existe déjà" });
+      }
+
+      const newCatway = new Catway({ catwayNumber, catwayType, catwayState });
+      await newCatway.save();
+
+      res.status(201).json({ message: "Catway ajouté avec succès !", catway: newCatway });
+  } catch (error) {
+      res.status(500).json({ error: "Erreur lors de l'ajout du catway" });
+  }
 };
+
+
 
 exports.update = async (req, res) => {
     try {

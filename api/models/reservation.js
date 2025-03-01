@@ -15,7 +15,8 @@ const ReservationSchema = new Schema({
     boatName: {
         type: String,
         trim: true,
-        required: [true, "Le nom du bateau est requis"]
+        required: [true, "Le nom du bateau est requis"],
+        maxlength: [50, "Le nom du bateau ne peut pas dépasser 100 caractères"]
     },
     checkIn: {
         type: Date,

@@ -1,4 +1,5 @@
 const Reservation = require('../models/reservation');
+const Catway = require('../models/catway'); 
 
 exports.authenticate = async (req, res, next) => {
     const { email, password } = req.body;
@@ -56,14 +57,36 @@ exports.getReservationById = async (req, res) => {
 };
 
 exports.addReservation = async (req, res) => {
-    try {
-        const newReservation = new Reservation(req.body);
-        await newReservation.save();
-        res.status(201).json(newReservation);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+  try {
+      const { clientName, boatName, checkIn, checkOut } = req.body;
+      const catwayId = req.params.id; // Récupère l'ID du catway depuis l'URL
+
+      if (!clientName || !boatName || !checkIn || !checkOut) {
+          return res.status(400).json({ error: "Tous les champs sont obligatoires" });
+      }
+
+      // Vérifie si le catway 
+      const catwayExists = await Catway.findById(catwayId);
+      if (!catwayExists) {
+          return res.status(404).json({ error: "Catway non trouvé" });
+      }
+
+      const newReservation = new Reservation({
+          catwayNumber: catwayId,  
+          clientName,
+          boatName,
+          checkIn,
+          checkOut
+      });
+
+      await newReservation.save();
+      res.status(201).json({ message: "Réservation ajoutée avec succès", reservation: newReservation });
+
+  } catch (err) {
+      res.status(500).json({ error: err.message });
+  }
 };
+
 
 exports.updateReservation = async (req, res) => {
     try {
