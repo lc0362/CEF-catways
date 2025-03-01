@@ -1,3 +1,5 @@
+const Catway = require('../models/catway');
+
 exports.authenticate = async (req, res, next) => {
     const { email, password } = req.body;
   
@@ -34,23 +36,52 @@ exports.authenticate = async (req, res, next) => {
     }
   };
 
-exports.getAllCatways = (req, res) => {
-    res.json({ message: "Tous les catways" });
+exports.getAllCatways = async (req, res) => {
+    try {
+        const catways = await Catway.find();
+        res.json(catways);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
-exports.getById = (req, res) => {
-    res.json({ message: `Catway ID: ${req.params.id}` });
+exports.getById = async (req, res) => {
+    try {
+        const catway = await Catway.findById(req.params.id);
+        if (!catway) return res.status(404).json({ message: "Catway non trouvé" });
+        res.json(catway);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
-exports.add = (req, res) => {
-    res.json({ message: "Catway ajouté !" });
+exports.add = async (req, res) => {
+    try {
+        const newCatway = new Catway(req.body);
+        await newCatway.save();
+        res.status(201).json(newCatway);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
 };
 
-exports.update = (req, res) => {
-    res.json({ message: `Catway ID: ${req.params.id} mis à jour !` });
+exports.update = async (req, res) => {
+    try {
+        const updatedCatway = await Catway.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedCatway) return res.status(404).json({ message: "Catway non trouvé" });
+        res.json(updatedCatway);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
-exports.delete = (req, res) => {
-    res.json({ message: `Catway ID: ${req.params.id} supprimé !` });
+exports.delete = async (req, res) => {
+    try {
+        const deletedCatway = await Catway.findByIdAndDelete(req.params.id);
+        if (!deletedCatway) return res.status(404).json({ message: "Catway non trouvé" });
+        res.json({ message: "Catway supprimé" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 

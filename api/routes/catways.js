@@ -16,7 +16,7 @@ router.get('/', service.getAllCatways);
 router.get('/:id', private.checkJWT, service.getById);
 
 // La route pour ajouter un catway
-router.put('/add', service.add);
+router.post('/add', service.add);
 
 // La route pour modifier un catway
 router.patch('/:id', private.checkJWT, service.update);

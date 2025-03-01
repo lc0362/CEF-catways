@@ -1,5 +1,7 @@
+require('./api/db/mongo').initClientDbConnection();
+
 const http = require('http');
-const app = require('./api/app'); // Assure-toi que ce chemin est correct
+const app = require('./api/app');
 
 const port = process.env.PORT || 8080;
 

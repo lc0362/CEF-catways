@@ -23,6 +23,7 @@ exports.checkJWT = async (req, res, next) => {
 
                 res.header('Authorization', 'Bearer ' + newToken);
                 next();
+                console.log(decoded);
             }
         });
     } else {
