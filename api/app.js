@@ -10,6 +10,8 @@ const authRoutes = require('./routes/auth');
 
 var app = express();
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Ici le * signifie que nous souhaitons accepter toutes les requêtes 
 // entrantes de tous les domaines, externes ou non
 app.use(cors({
@@ -26,6 +28,17 @@ app.use(cors({
   app.use('/auth', authRoutes); 
   app.use('/', indexRouter);
   app.use('/catways', catwaysRouter);
+
+
+  // Si utilisateurs non connectés, redirection vers la home
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Si utilisateurs connectés, redirection vers le dashboard
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
   
   app.use(function(req, res, next) {
       res.status(404).json({ name: 'API', version: '1.0', status: 404, message: 'not_found' });
