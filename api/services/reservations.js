@@ -1,4 +1,4 @@
-const Reservation = require('../models/reservations');
+const Reservation = require('../models/reservation');
 
 exports.authenticate = async (req, res, next) => {
     const { email, password } = req.body;
