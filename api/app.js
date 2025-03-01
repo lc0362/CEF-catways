@@ -6,6 +6,7 @@ var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var catwaysRouter = require('./routes/catways');
+const usersRouter = require('./routes/users');
 const authRoutes = require('./routes/auth');
 
 var app = express();
@@ -28,6 +29,7 @@ app.use(cors({
   app.use('/auth', authRoutes); 
   app.use('/', indexRouter);
   app.use('/catways', catwaysRouter);
+  app.use('/users', usersRouter);
 
 
   // Si utilisateurs non connectés, redirection vers la home

@@ -12,7 +12,7 @@ router.get('/test', (req, res) => {
 
 router.get('/', service.getAllCatways);
 
-// La route pour lire les infos d'un catway
+// La route pour lire les infos d'un catway spécifique
 router.get('/:id', private.checkJWT, service.getById);
 
 // La route pour ajouter un catway

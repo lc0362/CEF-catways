@@ -8,41 +8,41 @@
 </head>
 <body>
     <h1>Tableau de Bord</h1>
-    <button onclick="logout()">Se déconnecter</button>
 
-    <!-- 📌 Formulaire pour créer un utilisateur -->
-    <h2>Créer un utilisateur</h2>
+    <h2>Gestion des utilisateurs</h2>
+
+    <!-- Formulaire pour créer un utilisateur -->
+    <h3>Créer un utilisateur</h3>
     <form id="createUserForm">
         <input type="text" id="newUserName" placeholder="Nom" required>
         <input type="email" id="newUserEmail" placeholder="Email" required>
         <input type="password" id="newUserPassword" placeholder="Mot de passe" required>
         <button type="submit">Créer</button>
     </form>
-<div id="createUserMessage" style="display: none; padding: 10px; margin-top: 10px;"></div>
+    <div id="createUserMessage"></div>
 
-
-    <!-- 📌 Formulaire pour modifier un utilisateur -->
-    <h2>Modifier un utilisateur</h2>
+    <!-- Formulaire pour modifier un utilisateur -->
+    <h3>Modifier un utilisateur</h3>
     <form id="updateUserForm">
         <input type="text" id="userIdToUpdate" placeholder="ID de l'utilisateur" required>
         <input type="text" id="updateUserName" placeholder="Nouveau Nom">
         <input type="email" id="updateUserEmail" placeholder="Nouvel Email">
         <button type="submit">Modifier</button>
     </form>
-<div id="updateUserMessage" style="display: none; padding: 10px; margin-top: 10px;"></div>
+    <div id="updateUserMessage"></div>
 
-
-    <!-- 📌 Formulaire pour supprimer un utilisateur -->
-    <h2>Supprimer un utilisateur</h2>
+    <!-- Formulaire pour supprimer un utilisateur -->
+    <h3>Supprimer un utilisateur</h3>
     <form id="deleteUserForm">
         <input type="text" id="userIdToDelete" placeholder="ID de l'utilisateur" required>
         <button type="submit">Supprimer</button>
     </form>
-<div id="deleteUserMessage" style="display: none; padding: 10px; margin-top: 10px;"></div>
+    <div id="deleteUserMessage"></div>
 
+    <h2>Gestion des catways</h2>
 
-    <!-- 📌 Formulaire pour créer un catway -->
-    <h2>Créer un catway</h2>
+    <!-- Formulaire pour créer un catway -->
+    <h3>Créer un catway</h3>
     <form id="createCatwayForm">
         <input type="number" id="catwayNumber" placeholder="Numéro du catway" required>
         <select id="catwayType">
@@ -52,39 +52,28 @@
         <input type="text" id="catwayState" placeholder="État du catway" required>
         <button type="submit">Créer</button>
     </form>
-<div id="createCatwayMessage" style="display: none; padding: 10px; margin-top: 10px;"></div>
-
+    <div id="createCatwayMessage"></div>
 
     <!-- Formulaire pour modifier un catway -->
-    <h2>Modifier un catway</h2>
+    <h3>Modifier un catway</h3>
     <form id="updateCatwayForm">
         <input type="text" id="catwayIdToUpdate" placeholder="ID du catway" required>
         <input type="text" id="updateCatwayState" placeholder="Nouvel état du catway" required>
         <button type="submit">Modifier</button>
     </form>
-<div id="updateCatwayMessage" style="display: none; padding: 10px; margin-top: 10px;"></div>
-
+    <div id="updateCatwayMessage"></div>
 
     <!-- Formulaire pour supprimer un catway -->
-    <h2>Supprimer un catway</h2>
+    <h3>Supprimer un catway</h3>
     <form id="deleteCatwayForm">
         <input type="text" id="catwayIdToDelete" placeholder="ID du catway" required>
         <button type="submit">Supprimer</button>
     </form>
-<div id="deleteCatwayMessage" style="display: none; padding: 10px; margin-top: 10px;"></div>
+    <div id="deleteCatwayMessage"></div>
 
-
-    <!-- Formulaire pour afficher les détails d’un catway -->
-    <h2>Afficher un catway</h2>
-    <form id="getCatwayForm">
-        <input type="text" id="catwayIdToGet" placeholder="ID du catway" required>
-        <button type="submit">Afficher</button>
-    </form>
-<div id="getCatwayMessage" style="display: none; padding: 10px; margin-top: 10px;"></div>
-
-
+    <h2>Gestion des réservations</h2>
     <!-- Formulaire pour enregistrer une réservation -->
-    <h2>Créer une réservation</h2>
+    <h3>Créer une réservation</h3>
     <form id="createReservationForm">
         <input type="text" id="reservationCatwayId" placeholder="ID du catway" required>
         <input type="text" id="clientName" placeholder="Nom du client" required>
@@ -93,31 +82,17 @@
         <input type="datetime-local" id="checkOut" required>
         <button type="submit">Créer</button>
     </form>
-<div id="createReservationMessage" style="display: none; padding: 10px; margin-top: 10px;"></div>
+    <div id="createReservationMessage"></div>
 
+    <!-- Liens vers les listes -->
+    <h3>Consulter les listes</h3>
+    <ul>
+        <li><a href="/catways">🚤 Liste des Catways</a></li>
+        <li><a href="/reservations">📆 Liste des Réservations</a></li>
+    </ul>
 
-    <!-- Formulaire pour supprimer une réservation -->
-    <h2>Supprimer une réservation</h2>
-    <form id="deleteReservationForm">
-        <input type="text" id="reservationIdToDelete" placeholder="ID de la réservation" required>
-        <button type="submit">Supprimer</button>
-    </form>
-<div id="deleteReservationMessage" style="display: none; padding: 10px; margin-top: 10px;"></div>
-
-
-    <!-- Formulaire pour afficher les détails d’une réservation -->
-    <h2>Afficher une réservation</h2>
-    <form id="getReservationForm">
-        <input type="text" id="reservationIdToGet" placeholder="ID de la réservation" required>
-        <button type="submit">Afficher</button>
-    </form>
-<div id="getReservationMessage" style="display: none; padding: 10px; margin-top: 10px;"></div>
-
-
-    <!--  Liens vers les listes -->
-    <h2>Consulter les listes</h2>
-    <a href="/catways">🚤 Liste des Catways</a> |
-    <a href="/reservations">📆 Liste des Réservations</a>
+    <button onclick="logout()">Se déconnecter</button>
+    <div id="messageBox" style="display: none; padding: 10px; margin-top: 10px;"></div>
 
     <script src="/script.js"></script>
 </body>

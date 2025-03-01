@@ -83,16 +83,26 @@ exports.add = async (req, res) => {
 };
 
 
-
 exports.update = async (req, res) => {
-    try {
-        const updatedCatway = await Catway.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updatedCatway) return res.status(404).json({ message: "Catway non trouvé" });
-        res.json(updatedCatway);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+  try {
+      const { catwayState } = req.body;
+      const updatedCatway = await Catway.findByIdAndUpdate(
+          req.params.id,
+          { catwayState },
+          { new: true } // Retourne le document mis à jour
+      );
+
+      if (!updatedCatway) {
+          return res.status(404).json({ error: "Catway non trouvé" });
+      }
+
+      res.json({ message: "Catway mis à jour avec succès", updatedCatway });
+  } catch (err) {
+      res.status(500).json({ error: err.message });
+  }
 };
+
+
 
 exports.delete = async (req, res) => {
     try {

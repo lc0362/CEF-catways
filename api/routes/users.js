@@ -1,9 +1,15 @@
 var express = require('express');
 var router = express.Router();
+const private = require('../middlewares/private'); 
+const service = require('../services/users'); 
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+// Voir tous les utilisateurs 
+router.get('/', service.getAllUsers);
+
+// Modifier un utilisateur via son ID
+router.patch('/update/:id', private.checkJWT, service.updateUser);
+
+// Supprimer un utilisateur via son ID
+router.delete('/delete/:id', private.checkJWT, service.deleteUser);
 
 module.exports = router;
