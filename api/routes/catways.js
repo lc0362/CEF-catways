@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const private = require('../middlewares/private'); 
 
 const service = require('../services/catways');
 const reservationsRoutes = require('./reservations'); 
@@ -9,7 +10,7 @@ router.get('/test', (req, res) => {
     res.json({ message: "Route /catways fonctionne !" });
   });
 
-router.get('/', service.getAllcatways);
+router.get('/', service.getAllCatways);
 
 // La route pour lire les infos d'un catway
 router.get('/:id', private.checkJWT, service.getById);

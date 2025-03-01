@@ -54,6 +54,3 @@ exports.delete = (req, res) => {
     res.json({ message: `Catway ID: ${req.params.id} supprimé !` });
 };
 
-exports.authenticate = (req, res) => {
-    res.json({ message: "Authentification réussie !" });
-};

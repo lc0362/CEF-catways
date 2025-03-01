@@ -12,8 +12,7 @@ router.get('/:idReservation', service.getReservationById);
 router.post('/', service.addReservation);
 
 // Modifier une réservation d'un catway
-router.update('/:idReservation', service.updateReservation);
-
+router.patch('/:idReservation', service.updateReservation);
 
 // Supprimer une réservation d'un catway
 router.delete('/:idReservation', service.deleteReservation);
