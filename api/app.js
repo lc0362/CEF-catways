@@ -9,6 +9,7 @@ var catwaysRouter = require('./routes/catways');
 var reservationsRouter = require('./routes/reservations');
 const usersRouter = require('./routes/users');
 const authRoutes = require('./routes/auth');
+const docRoutes = require('./routes/auth');
 
 var app = express();
 

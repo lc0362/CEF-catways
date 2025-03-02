@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de bord</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/stylesheets/styles.css">
 </head>
 <body>
     <button><a href="/dashboard">Retour sur le tableau de bord principal</a></button>
@@ -14,7 +14,7 @@
         <p>Chargement des réservations...</p>
     </div>
 
-    <button onclick="logout()">Se déconnecter</button>
+    <button class="btn-deconnexion">Se déconnecter</button>
 
     <script>
         async function fetchReservations() {
@@ -75,22 +75,6 @@
         document.addEventListener("DOMContentLoaded", fetchReservations);
     </script>
 
-    <style>
-        .reservation-item {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        h2 {
-            color: #007bff;
-            margin-bottom: 5px;
-        }
-        p {
-            margin: 0;
-            color: #333;
-        }
-    </style>
+
 </body>
 </html>

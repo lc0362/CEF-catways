@@ -1,17 +1,57 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Sigmar&display=swap');
 
-a {
-  color: #00B7FF;
+body {
+  padding: 2em;
+  font-family: Arial, sans-serif;
+
+  margin-left: 5em;
 }
 
 h1 {
   color : #a557de;
+  font-family: "Sigmar", Arial, sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
-
 
 h2 {
   color : #7f60f7;
+  margin-top: 2em;
+}
+
+a {
+  color: #a557de;
+}
+
+a:hover {
+  color: #7f60f7;
+}
+
+button {
+  color: #a557de;
+  background-color: white;
+  padding: 0.3em;
+  border-radius: 15%;
+  min-width: 5em;
+}
+
+button:hover {
+  color: black;
+  background-color: #d7b6f0;
+
+}
+
+input:hover{
+  border-color: black;
+}
+
+.btn-deconnexion {
+  margin-top: 3em;
+}
+
+#reservationList {
+  border: #7f60f7;
+  border: solid;
+  border-radius: 10%;
+  padding: 1em;
 }

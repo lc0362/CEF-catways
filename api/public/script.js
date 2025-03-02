@@ -25,11 +25,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Déconnexion de l'utilisateur
     function logout() {
-        localStorage.removeItem("token");
-        window.location.href = "/";
+        console.log("Déconnexion en cours..."); // Debugging
+        localStorage.removeItem("token"); // Supprime le token
+        window.location.href = "/"; // Redirection vers la page d'accueil
     }
-    const logoutButton = document.getElementById("logoutButton");
-    if (logoutButton) logoutButton.addEventListener("click", logout);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const logoutButton = document.querySelector(".btn-deconnexion");
+        if (logoutButton) {
+            logoutButton.addEventListener("click", logout);
+        } else {
+            console.log("❌ Bouton de déconnexion non trouvé !");
+        }
+    });
 
     // Fonction générique pour gérer les requêtes API
     async function fetchAPI(url, method, body = null, auth = true) {
@@ -59,13 +67,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 if (data.token) {
                     localStorage.setItem("token", data.token);
-                    displayMessage("loginMessage", "✅ Connexion réussie !", true);
-                    setTimeout(() => { window.location.href = "/components/dashboard"; }, 1000);
+                    displayMessage("loginMessage", "Connexion réussie", true);
+                    setTimeout(() => { window.location.href = "/dashboard"; }, 1000);
                 } else {
-                    displayMessage("loginMessage", `❌ Erreur : ${data.error || "Identifiants incorrects"}`, false);
+                    displayMessage("loginMessage", `Erreur : ${data.error || "Identifiants incorrects"}`, false);
                 }
             } catch (error) {
-                displayMessage("loginMessage", `❌ Erreur inattendue : ${error.message}`, false);
+                displayMessage("loginMessage", `Erreur inattendue : ${error.message}`, false);
             }
         });
     }
@@ -82,10 +90,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const data = await fetchAPI("/auth/register", "POST", { name, email, password }, false);
             if (data.message) {
-                displayMessage("createUserMessage", "✅ Utilisateur créé !");
+                displayMessage("createUserMessage", "Utilisateur créé");
                 createUserForm.reset();
             } else {
-                displayMessage("createUserMessage", `❌ Erreur : ${data.error}`, false);
+                displayMessage("createUserMessage", `Erreur : ${data.error}`, false);
             }
         });
     }
@@ -102,9 +110,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const data = await fetchAPI(`/users/update/${userId}`, "PATCH", { name, email });
             if (data.message) {
-                displayMessage("updateUserMessage", "✅ Utilisateur mis à jour !");
+                displayMessage("updateUserMessage", "Utilisateur mis à jour");
             } else {
-                displayMessage("updateUserMessage", `❌ Erreur : ${data.error}`, false);
+                displayMessage("updateUserMessage", `Erreur : ${data.error}`, false);
             }
         });
     }
@@ -119,9 +127,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const data = await fetchAPI(`/users/delete/${userId}`, "DELETE");
             if (data.message) {
-                displayMessage("deleteUserMessage", "✅ Utilisateur supprimé !");
+                displayMessage("deleteUserMessage", "Utilisateur supprimé");
             } else {
-                displayMessage("deleteUserMessage", `❌ Erreur : ${data.error}`, false);
+                displayMessage("deleteUserMessage", `Erreur : ${data.error}`, false);
             }
         });
     }
@@ -138,10 +146,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const data = await fetchAPI("/catways/add", "POST", { catwayNumber, catwayType, catwayState });
             if (data.message) {
-                displayMessage("createCatwayMessage", "✅ Catway créé !");
+                displayMessage("createCatwayMessage", "Catway créé");
                 createCatwayForm.reset();
             } else {
-                displayMessage("createCatwayMessage", `❌ Erreur : ${data.error}`, false);
+                displayMessage("createCatwayMessage", `Erreur : ${data.error}`, false);
             }
         });
     }
@@ -157,9 +165,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const data = await fetchAPI(`/catways/${catwayId}`, "PATCH", { catwayState });
             if (data.message) {
-                displayMessage("updateCatwayMessage", "✅ Catway mis à jour !");
+                displayMessage("updateCatwayMessage", "Catway mis à jour");
             } else {
-                displayMessage("updateCatwayMessage", `❌ Erreur : ${data.error}`, false);
+                displayMessage("updateCatwayMessage", `Erreur : ${data.error}`, false);
             }
         });
     }
@@ -174,49 +182,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const data = await fetchAPI(`/catways/${catwayId}`, "DELETE");
             if (data.message) {
-                displayMessage("deleteCatwayMessage", "✅ Catway supprimé !");
+                displayMessage("deleteCatwayMessage", "Catway supprimé");
             } else {
-                displayMessage("deleteCatwayMessage", `❌ Erreur : ${data.error}`, false);
+                displayMessage("deleteCatwayMessage", `Erreur : ${data.error}`, false);
             }
-        });
-
-        // Créer une réservation
-        const createReservationForm = document.getElementById("createReservationForm");
-        if (createReservationForm) {
-            createReservationForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-
-                const catwayId = document.getElementById("reservationCatwayId").value;
-                const clientName = document.getElementById("clientName").value;
-                const boatName = document.getElementById("boatName").value;
-                const checkIn = document.getElementById("checkIn").value;
-                const checkOut = document.getElementById("checkOut").value;
-
-                const data = await fetchAPI(`/catways/${catwayId}/reservations`, "POST", { clientName, boatName, checkIn, checkOut });
-                if (data.message) {
-                    displayMessage("createReservationMessage", "✅ Réservation créée !");
-                    createReservationForm.reset();
-                } else {
-                    displayMessage("createReservationMessage", `❌ Erreur : ${data.error}`, false);
-                }
-            });
-        }
-
-        // Supprimer une réservation 
-        const deleteReservationForm = document.getElementById("deleteReservationForm");
-        if (deleteReservationForm) {
-            deleteReservationForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-
-                const reservationId = document.getElementById("reservationIdToDelete").value;
-
-                const data = await fetchAPI(`/reservations/${reservationId}`, "DELETE");
-                if (data.message) {
-                    displayMessage("deleteReservationMessage", "✅ Réservation supprimée !");
-                } else {
-                    displayMessage("deleteReservationMessage", `❌ Erreur : ${data.error}`, false);
-                }
         });
     }
 
+    // Vérification et gestion des formulaires pour les réservations
+    const createReservationForm = document.getElementById("createReservationForm");
+    if (createReservationForm) {
+        createReservationForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const catwayId = document.getElementById("reservationCatwayId").value;
+            const clientName = document.getElementById("clientName").value;
+            const boatName = document.getElementById("boatName").value;
+            const checkIn = document.getElementById("checkIn").value;
+            const checkOut = document.getElementById("checkOut").value;
+
+            const data = await fetchAPI(`/catways/${catwayId}/reservations`, "POST", { clientName, boatName, checkIn, checkOut });
+            if (data.message) {
+                displayMessage("createReservationMessage", "Réservation créée");
+                createReservationForm.reset();
+            } else {
+                displayMessage("createReservationMessage", `Erreur : ${data.error}`, false);
+            }
+        });
+    }
+    // Supprimer une réservation 
+    const deleteReservationForm = document.getElementById("deleteReservationForm");
+    if (deleteReservationForm) {
+        deleteReservationForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const reservationId = document.getElementById("reservationIdToDelete").value;
+
+            const data = await fetchAPI(`/reservations/${reservationId}`, "DELETE");
+            if (data.message) {
+                displayMessage("deleteReservationMessage", "Réservation supprimée");
+            } else {
+                displayMessage("deleteReservationMessage", `Erreur : ${data.error}`, false);
+            }
+        });
+    }
 });

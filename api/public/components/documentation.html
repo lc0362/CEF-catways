@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <title>Procédure</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Procédure</h1>
+        <h2>Sommaire</h2>
+        <ul>
+            <li><a href="#connexion">Connexion à l’API</a></li>
+            <li><a href="#creation">Créer un utilisateur</a></li>
+            <li><a href="#login">Se connecter à un compte utilisateur</a></li>
+            <li><a href="#catway">Créer un catway</a></li>
+            <li><a href="#reservation">Créer une réservation</a></li>
+        </ul>
+        
+        <h2 id="connexion">Connexion à l’API</h2>
+        <p>Seules les personnes qui ont créé un compte utilisateur peuvent, en étant connectées, faire des actions sur la base de données.</p>
+        <p>Sur Postman, faire un POST de <code>http://localhost:8080/auth/register</code></p>
+        
+        <h2 id="creation">Créer un utilisateur</h2>
+        <p>Faire un POST de <code>http://localhost:8080/auth/login</code> avec les informations nécessaires.</p>
+        
+        <h2 id="login">Se connecter à un compte utilisateur</h2>
+        <p>Faites un GET de <code>http://localhost:8080/catways</code> en ajoutant le token dans l’onglet Authorization.</p>
+        
+        <h2 id="catway">Créer un catway</h2>
+        <p>Faites un POST de <code>http://localhost:8080/catways/add</code> avec les champs nécessaires.</p>
+        
+        <h2 id="reservation">Créer une réservation</h2>
+        <p>Faites un POST de <code>http://localhost:8080/catways/IDNUMBER/reservations</code> avec les informations requises.</p>
+    </div>
+</body>
+</html>
