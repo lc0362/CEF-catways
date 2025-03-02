@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <button><a href="/dashboard">Retour sur le tableau de bord principal</a></button>
+    <h1>📆 Liste des Réservations</h1>
+
+    <div id="reservationList">
+        <p>Chargement des réservations...</p>
+    </div>
+
+    <button onclick="logout()">Se déconnecter</button>
+
+    <script>
+        async function fetchReservations() {
+            try {
+                const response = await fetch('/reservations', {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                const reservations = await response.json();
+                const reservationList = document.getElementById("reservationList");
+                reservationList.innerHTML = ""; 
+
+                if (response.ok) {
+                    reservations.forEach(reservation => {
+                        // Création d'un conteneur div pour chaque réservation
+                        const reservationDiv = document.createElement("div");
+                        reservationDiv.classList.add("reservation-item");
+
+                        // Titre avec l'ID de la réservation
+                        const title = document.createElement("h2");
+                        title.textContent = `Réservation ID: ${reservation._id}`;
+
+                        // Paragraphe avec les détails de la réservation
+                        const details = document.createElement("p");
+                        details.innerHTML = `<strong>Catway #:</strong> ${reservation.catwayNumber} <br> 
+                                             <strong>Client:</strong> ${reservation.clientName} <br>
+                                             <strong>Bateau:</strong> ${reservation.boatName} <br>
+                                             <strong>Check-in:</strong> ${new Date(reservation.checkIn).toLocaleString()} <br>
+                                             <strong>Check-out:</strong> ${new Date(reservation.checkOut).toLocaleString()}`;
+
+                        // Ajouter les éléments créés dans la div
+                        reservationDiv.appendChild(title);
+                        reservationDiv.appendChild(details);
+
+                        // Ajouter la div au conteneur principal
+                        reservationList.appendChild(reservationDiv);
+                    });
+                } else {
+                    reservationList.innerHTML = `<p>❌ Erreur : ${reservations.error || "Impossible de charger les réservations"}</p>`;
+                }
+
+            } catch (error) {
+                document.getElementById("reservationList").innerHTML = `<p>❌ Erreur inattendue : ${error.message}</p>`;
+            }
+        }
+
+        // Fonction pour déconnecter l'utilisateur
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "/";
+        }
+
+        // Charger les réservations au chargement de la page
+        document.addEventListener("DOMContentLoaded", fetchReservations);
+    </script>
+
+    <style>
+        .reservation-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        p {
+            margin: 0;
+            color: #333;
+        }
+    </style>
+</body>
+</html>

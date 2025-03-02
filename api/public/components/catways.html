@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <button><a href="/dashboard">Retour sur le tableau de bord principal</a></button>
+    <h1>🚤 Liste des Catways</h1>
+
+    <ul id="catwayList">
+        <li>Chargement des catways...</li>
+    </ul>
+
+    <button onclick="logout()">Se déconnecter</button>
+
+    <script>
+        async function fetchCatways() {
+            try {
+                const response = await fetch('/catways', {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                const catways = await response.json();
+                const catwayList = document.getElementById("catwayList");
+                catwayList.innerHTML = "";
+
+                if (response.ok) {
+                    catways.forEach(catway => {
+                        // Création d'un conteneur div pour chaque catway
+                        const catwayDiv = document.createElement("div");
+                        catwayDiv.classList.add("catway-item");
+
+                        // Titre avec le numéro du catway
+                        const title = document.createElement("h2");
+                        title.textContent = `Catway #${catway.catwayNumber}`;
+
+                        // Paragraphe avec le type, l'état et l'ID
+                        const details = document.createElement("p");
+                        details.innerHTML = `<strong>ID:</strong> ${catway._id} <br> 
+                                             <strong>Type:</strong> ${catway.catwayType} <br>
+                                             <strong>État:</strong> ${catway.catwayState}`;
+
+                        // Ajouter les éléments créés dans la div
+                        catwayDiv.appendChild(title);
+                        catwayDiv.appendChild(details);
+
+                        // Ajouter la div au conteneur principal
+                        catwayList.appendChild(catwayDiv);
+                    });
+                } else {
+                    catwayList.innerHTML = `<li>❌ Erreur : ${catways.error || "Impossible de charger les catways"}</li>`;
+                }
+
+            } catch (error) {
+                document.getElementById("catwayList").innerHTML = `<li>❌ Erreur inattendue : ${error.message}</li>`;
+            }
+        }
+
+        // Fonction pour déconnecter l'utilisateur
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "/";
+        }
+
+        // Charger les catways au chargement de la page
+        document.addEventListener("DOMContentLoaded", fetchCatways);
+    </script>
+</body>
+</html>

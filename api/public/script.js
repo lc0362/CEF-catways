@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.token) {
                     localStorage.setItem("token", data.token);
                     displayMessage("loginMessage", "✅ Connexion réussie !", true);
-                    setTimeout(() => { window.location.href = "/dashboard"; }, 1000);
+                    setTimeout(() => { window.location.href = "/components/dashboard"; }, 1000);
                 } else {
                     displayMessage("loginMessage", `❌ Erreur : ${data.error || "Identifiants incorrects"}`, false);
                 }
@@ -126,6 +126,26 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Créer un catway 
+    const createCatwayForm = document.getElementById("createCatwayForm");
+    if (createCatwayForm) {
+        createCatwayForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const catwayNumber = document.getElementById("catwayNumber").value;
+            const catwayType = document.getElementById("catwayType").value;
+            const catwayState = document.getElementById("catwayState").value;
+
+            const data = await fetchAPI("/catways/add", "POST", { catwayNumber, catwayType, catwayState });
+            if (data.message) {
+                displayMessage("createCatwayMessage", "✅ Catway créé !");
+                createCatwayForm.reset();
+            } else {
+                displayMessage("createCatwayMessage", `❌ Erreur : ${data.error}`, false);
+            }
+        });
+    }
+
     // Modifier un catway via son ID
     const updateCatwayForm = document.getElementById("updateCatwayForm");
     if (updateCatwayForm) {
@@ -159,5 +179,44 @@ document.addEventListener("DOMContentLoaded", function () {
                 displayMessage("deleteCatwayMessage", `❌ Erreur : ${data.error}`, false);
             }
         });
+
+        // Créer une réservation
+        const createReservationForm = document.getElementById("createReservationForm");
+        if (createReservationForm) {
+            createReservationForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const catwayId = document.getElementById("reservationCatwayId").value;
+                const clientName = document.getElementById("clientName").value;
+                const boatName = document.getElementById("boatName").value;
+                const checkIn = document.getElementById("checkIn").value;
+                const checkOut = document.getElementById("checkOut").value;
+
+                const data = await fetchAPI(`/catways/${catwayId}/reservations`, "POST", { clientName, boatName, checkIn, checkOut });
+                if (data.message) {
+                    displayMessage("createReservationMessage", "✅ Réservation créée !");
+                    createReservationForm.reset();
+                } else {
+                    displayMessage("createReservationMessage", `❌ Erreur : ${data.error}`, false);
+                }
+            });
+        }
+
+        // Supprimer une réservation 
+        const deleteReservationForm = document.getElementById("deleteReservationForm");
+        if (deleteReservationForm) {
+            deleteReservationForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const reservationId = document.getElementById("reservationIdToDelete").value;
+
+                const data = await fetchAPI(`/reservations/${reservationId}`, "DELETE");
+                if (data.message) {
+                    displayMessage("deleteReservationMessage", "✅ Réservation supprimée !");
+                } else {
+                    displayMessage("deleteReservationMessage", `❌ Erreur : ${data.error}`, false);
+                }
+        });
     }
+
 });

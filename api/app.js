@@ -6,6 +6,7 @@ var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var catwaysRouter = require('./routes/catways');
+var reservationsRouter = require('./routes/reservations');
 const usersRouter = require('./routes/users');
 const authRoutes = require('./routes/auth');
 
@@ -29,6 +30,7 @@ app.use(cors({
   app.use('/auth', authRoutes); 
   app.use('/', indexRouter);
   app.use('/catways', catwaysRouter);
+  app.use('/reservations', reservationsRouter);
   app.use('/users', usersRouter);
 
 
@@ -39,7 +41,7 @@ app.use(cors({
 
 // Si utilisateurs connectés, redirection vers le dashboard
 app.get('/dashboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+    res.sendFile(path.join(__dirname, 'public', 'components', 'dashboard.html'));
 });
   
   app.use(function(req, res, next) {
