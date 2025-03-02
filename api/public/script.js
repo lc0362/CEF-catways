@@ -1,148 +1,163 @@
-// Fonction pour afficher un message de 5sec succès ou échec
-function displayMessage(elementId, message, isSuccess = true) {
-    const messageBox = document.getElementById(elementId);
-    messageBox.style.display = "block";
-    messageBox.style.color = isSuccess ? "green" : "red";
-    messageBox.textContent = message;
+// Attendre que le DOM soit chargé avant d'exécuter le script pour éviter l'erreur document.getElementById is null
+document.addEventListener("DOMContentLoaded", function () {
 
-    setTimeout(() => {
-        messageBox.style.display = "none";
-    }, 5000);
-}
+    // Fonction pour afficher un message temporaire (5 sec)
+    function displayMessage(elementId, message, isSuccess = true) {
+        const messageBox = document.getElementById(elementId);
+        if (!messageBox) return;
+        messageBox.style.display = "block";
+        messageBox.style.color = isSuccess ? "green" : "red";
+        messageBox.textContent = message;
 
-// Créer un utilisateur
-document.getElementById("createUserForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+        setTimeout(() => {
+            messageBox.style.display = "none";
+        }, 5000);
+    }
 
-    const name = document.getElementById("newUserName").value;
-    const email = document.getElementById("newUserEmail").value;
-    const password = document.getElementById("newUserPassword").value;
+    // Vérifier si l'utilisateur est connecté
+    function checkAuth() {
+        const token = localStorage.getItem("token");
+        if (!token && window.location.pathname !== "/") {
+            window.location.href = "/";
+        }
+    }
+    checkAuth();
 
-    try {
-        const response = await fetch(`/auth/register`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ name, email, password })
+    // Déconnexion de l'utilisateur
+    function logout() {
+        localStorage.removeItem("token");
+        window.location.href = "/";
+    }
+    const logoutButton = document.getElementById("logoutButton");
+    if (logoutButton) logoutButton.addEventListener("click", logout);
+
+    // Fonction générique pour gérer les requêtes API
+    async function fetchAPI(url, method, body = null, auth = true) {
+        const headers = { "Content-Type": "application/json" };
+        if (auth) headers["Authorization"] = "Bearer " + localStorage.getItem("token");
+
+        const response = await fetch(url, {
+            method,
+            headers,
+            body: body ? JSON.stringify(body) : null
         });
 
-        const data = await response.json();
-        if (response.ok) {
-            displayMessage("createUserMessage", "✅ Utilisateur créé avec succès !");
-            document.getElementById("createUserForm").reset();
-        } else {
-            displayMessage("createUserMessage", `❌ Erreur : ${data.error || "Impossible de créer l'utilisateur"}`, false);
-        }
-    } catch (error) {
-        displayMessage("createUserMessage", `❌ Erreur inattendue : ${error.message}`, false);
+        return response.json();
     }
-});
 
+    // Gestion de la connexion utilisateur
+    const loginForm = document.getElementById("loginForm");
+    if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-// Modifier un catway via son ID
-document.getElementById("updateCatwayForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
 
-    const catwayId = document.getElementById("catwayIdToUpdate").value;
-    const catwayState = document.getElementById("updateCatwayState").value;
-
-    try {
-        const response = await fetch(`/catways/${catwayId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token") 
-            },
-            body: JSON.stringify({ catwayState })
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-            displayMessage("updateCatwayMessage", "✅ Catway mis à jour !");
-        } else {
-            displayMessage("updateCatwayMessage", `❌ Erreur : ${data.error || "Impossible de modifier le catway"}`, false);
-        }
-    } catch (error) {
-        displayMessage("updateCatwayMessage", `❌ Erreur inattendue : ${error.message}`, false);
-    }
-});
-
-// Supprimer un catway via son ID
-document.getElementById("deleteCatwayForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const catwayId = document.getElementById("catwayIdToDelete").value;
-
-    try {
-        const response = await fetch(`/catways/${catwayId}`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" }
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-            displayMessage("deleteCatwayMessage", "✅ Catway supprimé !");
-        } else {
-            displayMessage("deleteCatwayMessage", `❌ Erreur : ${data.error || "Impossible de supprimer le catway"}`, false);
-        }
-    } catch (error) {
-        displayMessage("deleteCatwayMessage", `❌ Erreur inattendue : ${error.message}`, false);
-    }
-});
-
-// Modifier un user via son ID
-document.getElementById("updateUserForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const userId = document.getElementById("userIdToUpdate").value;
-    const name = document.getElementById("updateUserName").value;
-    const email = document.getElementById("updateUserEmail").value;
-
-    try {
-        const response = await fetch(`/users/update/${userId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: JSON.stringify({ name, email })
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-            displayMessage("updateUserMessage", "✅ Utilisateur mis à jour !");
-        } else {
-            displayMessage("updateUserMessage", `❌ Erreur : ${data.error || "Impossible de modifier l'utilisateur"}`, false);
-        }
-    } catch (error) {
-        displayMessage("updateUserMessage", `❌ Erreur inattendue : ${error.message}`, false);
-    }
-});
-
-
-// Supprimer un user via son ID
-document.getElementById("deleteUserForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const userId = document.getElementById("userIdToDelete").value;
-
-    try {
-        const response = await fetch(`/users/delete/${userId}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
+            try {
+                const data = await fetchAPI("/auth/login", "POST", { email, password }, false);
+                
+                if (data.token) {
+                    localStorage.setItem("token", data.token);
+                    displayMessage("loginMessage", "✅ Connexion réussie !", true);
+                    setTimeout(() => { window.location.href = "/dashboard"; }, 1000);
+                } else {
+                    displayMessage("loginMessage", `❌ Erreur : ${data.error || "Identifiants incorrects"}`, false);
+                }
+            } catch (error) {
+                displayMessage("loginMessage", `❌ Erreur inattendue : ${error.message}`, false);
             }
         });
+    }
 
-        const data = await response.json();
-        if (response.ok) {
-            displayMessage("deleteUserMessage", "✅ Utilisateur supprimé !");
-        } else {
-            displayMessage("deleteUserMessage", `❌ Erreur : ${data.error || "Impossible de supprimer l'utilisateur"}`, false);
-        }
-    } catch (error) {
-        displayMessage("deleteUserMessage", `❌ Erreur inattendue : ${error.message}`, false);
+    // Création d'un utilisateur
+    const createUserForm = document.getElementById("createUserForm");
+    if (createUserForm) {
+        createUserForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("newUserName").value;
+            const email = document.getElementById("newUserEmail").value;
+            const password = document.getElementById("newUserPassword").value;
+
+            const data = await fetchAPI("/auth/register", "POST", { name, email, password }, false);
+            if (data.message) {
+                displayMessage("createUserMessage", "✅ Utilisateur créé !");
+                createUserForm.reset();
+            } else {
+                displayMessage("createUserMessage", `❌ Erreur : ${data.error}`, false);
+            }
+        });
+    }
+
+    // Modifier un utilisateur via son ID
+    const updateUserForm = document.getElementById("updateUserForm");
+    if (updateUserForm) {
+        updateUserForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const userId = document.getElementById("userIdToUpdate").value;
+            const name = document.getElementById("updateUserName").value;
+            const email = document.getElementById("updateUserEmail").value;
+
+            const data = await fetchAPI(`/users/update/${userId}`, "PATCH", { name, email });
+            if (data.message) {
+                displayMessage("updateUserMessage", "✅ Utilisateur mis à jour !");
+            } else {
+                displayMessage("updateUserMessage", `❌ Erreur : ${data.error}`, false);
+            }
+        });
+    }
+
+    // Supprimer un utilisateur via son ID
+    const deleteUserForm = document.getElementById("deleteUserForm");
+    if (deleteUserForm) {
+        deleteUserForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const userId = document.getElementById("userIdToDelete").value;
+
+            const data = await fetchAPI(`/users/delete/${userId}`, "DELETE");
+            if (data.message) {
+                displayMessage("deleteUserMessage", "✅ Utilisateur supprimé !");
+            } else {
+                displayMessage("deleteUserMessage", `❌ Erreur : ${data.error}`, false);
+            }
+        });
+    }
+
+    // Modifier un catway via son ID
+    const updateCatwayForm = document.getElementById("updateCatwayForm");
+    if (updateCatwayForm) {
+        updateCatwayForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const catwayId = document.getElementById("catwayIdToUpdate").value;
+            const catwayState = document.getElementById("updateCatwayState").value;
+
+            const data = await fetchAPI(`/catways/${catwayId}`, "PATCH", { catwayState });
+            if (data.message) {
+                displayMessage("updateCatwayMessage", "✅ Catway mis à jour !");
+            } else {
+                displayMessage("updateCatwayMessage", `❌ Erreur : ${data.error}`, false);
+            }
+        });
+    }
+
+    // Supprimer un catway via son ID
+    const deleteCatwayForm = document.getElementById("deleteCatwayForm");
+    if (deleteCatwayForm) {
+        deleteCatwayForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const catwayId = document.getElementById("catwayIdToDelete").value;
+
+            const data = await fetchAPI(`/catways/${catwayId}`, "DELETE");
+            if (data.message) {
+                displayMessage("deleteCatwayMessage", "✅ Catway supprimé !");
+            } else {
+                displayMessage("deleteCatwayMessage", `❌ Erreur : ${data.error}`, false);
+            }
+        });
     }
 });
-
