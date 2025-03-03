@@ -7,8 +7,9 @@
     <title>Documentation</title>
 </head>
 <body>
-    <button><a href="/">Retour sur la page d'accueil</a></button>
-    <div class="container">
+    
+    <div class="container" id="top">
+        <div><button><a href="/">Retour sur la page d'accueil</a></button></div>
         <h1>Documentation</h1>
 
         <p>Seules les personnes qui ont créé un compte utilisateur peuvent, en étant connectées, 
@@ -17,18 +18,27 @@
 
         <h2>Sommaire</h2>
         <ul>
-            <li><a href="#creation">Créer un utilisateur</a></li>
-            <li><a href="#login">Se connecter à un compte utilisateur</a></li>
-            <li><a href="#catway">Créer un catway</a></li>
-            <li><a href="#reservation">Créer une réservation</a></li>
+            <a href="#tutoriel">Tutoriel</a>
+        <ul>
+            <li><a href="#creation">Créer un compte utilisateur</a></li>
+            <li><a href="#login">Se connecter</a></li>
+            <li><a href="#token">Authentification et utilisation du Token</a></li>
+            <li><a href="#user-delete">Supprimer un utilisateur</a></li>
+            <li><a href="#catway-add">Créer un Catway</a></li>
+            <li><a href="#catway-patch">Modifier un Catway</a></li>
+            <li><a href="#catway-delete">Supprimer un Catway</a></li>
+            <li><a href="#reservation-add">Créer une Réservation</a></li>
+            <li><a href="#reservation-delete">Supprimer une Réservation</a></li>
         </ul>
-        
-        <h2>Tutoriel</h2>
+        </ul>
+        <h2 id="tutoriel">Tutoriel</h2>
         <h3 id="creation">Créer un utilisateur</h3>
         <p>Sur Postman, faire un POST de <code>http://localhost:8080/auth/register</code>. </p>
         <p> Compléter dans Body > x-www-form-urlencoded un name, email et password.</p> 
         <p>Cliquer sur Send. Un message de confirmation s’affiche.</p>
         <img src="/images/creation.jpg" alt="Création d'un utilisateur sur Postman">    
+
+        <div><button><a href="#top">Remonter en haut de la page</a></button></div>
        
         <h3 id="login">Se connecter à un compte utilisateur</h3>
         <p>Sur Postman, faire un POST de <code>http://localhost:8080/auth/login</code>.</p>
@@ -37,11 +47,15 @@
         <p>Un token s’affiche. <b>Copier le token.</b></p>
         <img src="/images/connexion.jpg" alt="Connexion d'un utilisateur sur Postman">
 
+        <div><button><a href="#top">Remonter en haut de la page</a></button></div>
+
         <h3 id="token">Authentification et Token</h3>
         <p>Une fois le token copié, faire un GET de <code>http://localhost:8080/catways</code>.</p>
         <p>Puis dans l’onglet « Authorization », sélectionnez Bearer Token et collez le token dans la case :</p>
         <img src="/images/token.jpg" alt="Exemple de token généré">       
         <p>Un code 200 s’affiche -> ça fonctionne, vous pouvez maintenant agir sur la base de données.</p>
+
+        <div><button><a href="#top">Remonter en haut de la page</a></button></div>
 
         <h3 id="user-delete">Suppression d'un utilisateur</h3>
         <p>Faire un DELETE de <code>http://localhost:8080/users/delete/IDUSER</code>.</p>
@@ -50,6 +64,8 @@
         <img src="/images/suppression-user-postman.jpg" alt="Suppression via Postman">
         <p>Cliquer sur Send.</p>
         <img src="/images/suppression-user-confirm.jpg" alt="Confirmation de suppression">
+
+        <div><button><a href="#top">Remonter en haut de la page</a></button></div>
 
         <h3 id="catway-add">Créer un catway</h3>
         <p>Faire un POST de <code>http://localhost:8080/catways/add</code>.</p>
@@ -63,8 +79,10 @@
         <p>Cliquez sur Send. Le message Catway ajouté avec succès ! s’affiche avec le récapitulatif de l’objet qui vient d’être créé.</p>
         <img src="/images/catway-add.jpg" alt="Ajout d'un catway">
 
+        <div><button><a href="#top">Remonter en haut de la page</a></button></div>
+
         <h3 id="catway-patch">Modifier un catway</h3>
-        <p>Récupérer l'ID d'un catway sur MongoDB dans le répertoire catways. Copier l'ID.</p>
+        <p>Récupérer l'ID d'un catway sur MongoDB dans le répertoire catways ou sur la page /catways/list. Copier l'ID.</p>
         <p>Faire un PATCH de <code>http://localhost:8080/catways/IDNUMBER</code></p>
         <p>Avec le ou les 3 champs modifiés : 
             <ul>
@@ -76,13 +94,17 @@
         <p>Cliquer sur Send.</p>
         <img src="/images/catway-patch.jpg" alt="Mise à jour d'un catway">
 
+        <div><button><a href="#top">Remonter en haut de la page</a></button></div>
+
         <h3 id="catway-delete">Supprimer un catway</h3>
-        <p>Récupérer l'ID d'un catway sur MongoDB dans le répertoire catways. Copier l'ID.</p>
+        <p>Récupérer l'ID d'un catway sur MongoDB dans le répertoire catways ou sur la page /catways/list. Copier l'ID.</p>
         <p>Faire un DELETE de <code>http://localhost:8080/catways/IDCATWAY</code>.</p>
         <img src="/images/catway-delete.jpg" alt="Suppression d'un catway">
 
+        <div><button><a href="#top">Remonter en haut de la page</a></button></div>
+
         <h3 id="reservation-add">Créer une réservation</h3>
-        <p>Récupérer l'ID d'un catway sur MongoDB dans le répertoire catways. Copier l'ID.</p>
+        <p>Récupérer l'ID d'un catway sur MongoDB dans le répertoire catways ou sur la page /catways/list. Copier l'ID.</p>
         <p>Faites un POST de <code>http://localhost:8080/catways/IDNUMBER/reservations</code>.</p>
         <p>Complétez les 4 champs : 
                 <ul>
@@ -92,16 +114,23 @@
                 </ul>
         </p>
         <p>Le champ catwayNumber est automatiquement complété via l’url. Cliquez sur Send.</p>
+
+        <div><button><a href="#top">Remonter en haut de la page</a></button></div>
                 
         <h3 id="reservation-delete">Supprimer une réservation</h3>
-        <p>Faites un DELETE de <code>http://localhost:8080/catways/add</code> avec les champs nécessaires.</p>
-        <img src="/images/reservation-post.jpg" alt="Création d'une réservation">
-        
-        
-        
-        
+        <p>Récupérer l'ID d'une réservation, 2 possibilités :
+            <ul>
+                <li>Sur MongoDB dans le répertoire reservations.</li>
+                <li>Sur le serveur sur la page /reservations/list</li>
+            </ul></p>
+            <img src="/images/reservation-list.jpg" alt="Récupérer l'ID d'une réservation sur le navigateur">
+        <p>Sur Postman, faire un DELETE de <code>http://localhost:8080/reservations/IDRESERVATION</code> avec les champs nécessaires.</p>
+        <img src="/images/reservation-delete.jpg" alt="Supression d'une réservation sur postman">
+        <p>Sur le serveur, entrer l'ID de la réservation et cliquer sur le bouton Supprimer </p>
+        <img src="/images/reservation-delete-server.jpg" alt="Supression d'une réservation sur le navigateur">
 
-
+        <div><button><a href="#top">Remonter en haut de la page</a></button></div>
     </div>
+    
 </body>
 </html>
