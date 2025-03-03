@@ -54,9 +54,16 @@ input:hover{
   margin-top: 4em;
 }
 
+.bold {
+  font-weight: 700;
+}
 
 code {
   color : #7f60f7;
+}
+
+#summary {
+  line-height: 1.7;
 }
 
 @media screen and (min-width: 1024px) {

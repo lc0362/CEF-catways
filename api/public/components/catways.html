@@ -39,11 +39,11 @@
 
                         // Titre avec le numéro du catway
                         const title = document.createElement("h2");
-                        title.textContent = `Catway #${catway.catwayNumber}`;
+                        title.textContent = `Catway ID: ${catway._id}`;
 
                         // Paragraphe avec le type, l'état et l'ID
                         const details = document.createElement("p");
-                        details.innerHTML = `<strong>ID:</strong> ${catway._id} <br> 
+                        details.innerHTML = `<strong>Pont:</strong> #${catway.catwayNumber} <br> 
                                              <strong>Type:</strong> ${catway.catwayType} <br>
                                              <strong>État:</strong> ${catway.catwayState}`;
 
