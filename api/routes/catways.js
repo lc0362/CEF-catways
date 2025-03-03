@@ -31,7 +31,11 @@ router.patch('/:id', private.checkJWT, service.update);
 router.delete('/:id', private.checkJWT, service.delete);
 
 // La route pour les réservations, en tant que sous ressource
-router.use('/:id/reservations', reservationsRoutes);
+router.use('/:id/reservations', (req, res, next) => {
+  console.log("📌 ID Catway reçu dans la route :", req.params.id); 
+  next();
+}, reservationsRoutes);
+
 
 
 module.exports = router;

@@ -32,7 +32,7 @@ router.post('/register', async (req, res) => {
 
 
 
-// Route pour générer un token
+// Route pour générer un token (auth/login)
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;

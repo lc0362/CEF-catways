@@ -1,8 +1,13 @@
 const express = require('express');
 const path = require('path');
 const service = require('../services/reservations');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const private = require('../middlewares/private');
+
+router.use((req, res, next) => {
+    console.log("📌 ID Catway reçu dans la route :", req.params.id);
+    next();
+});
 
 // Récupérer toutes les réservations d'un catway
 router.get('/', private.checkJWT, service.getAllReservations);
@@ -22,8 +27,6 @@ router.get('/:idReservation', private.checkJWT, service.getReservationById);
 // Ajouter une réservation pour un catway
 router.post('/', private.checkJWT, service.addReservation);
 
-// Modifier une réservation d'un catway
-router.patch('/:idReservation', private.checkJWT, service.updateReservation);
 
 // Supprimer une réservation d'un catway
 router.delete('/:idReservation', private.checkJWT, service.deleteReservation);

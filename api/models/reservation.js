@@ -1,43 +1,38 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const ReservationSchema = new Schema({
-    catwayNumber: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Catway",
-        required: [true, "Le numéro de pont est requis"]
+const ReservationSchema = new mongoose.Schema({
+    catwayId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Catway", 
+        required: [true, "L'identifiant du catway est requis"] 
     },
-    clientName: {
-        type: String,
-        trim: true,
-        required: [true, "Le nom du client est requis"]
+    clientName: { 
+        type: String, 
+        trim: true, 
+        required: [true, "Le nom du client est requis"] 
     },
-    boatName: {
-        type: String,
-        trim: true,
-        required: [true, "Le nom du bateau est requis"],
-        maxlength: [50, "Le nom du bateau ne peut pas dépasser 100 caractères"]
+    boatName: { 
+        type: String, 
+        trim: true, 
+        required: [true, "Le nom du bateau est requis"], 
+        maxlength: [100, "Le nom du bateau ne peut pas dépasser 100 caractères"]
     },
-    checkIn: {
-        type: Date,
-        required: [true, "La date de début de réservation est requise"],
-        validate: {
-            validator: function(value) {
-                return !isNaN(Date.parse(value));
-            },
-            message: "La date de début doit être valide"
-        }
+    checkIn: { 
+        type: Date, 
+        required: [true, "La date de début de réservation est requise"]
     },
-    checkOut: {
-        type: Date,
-        required: [true, "La date de fin de réservation est requise"],
-        validate: {
-            validator: function(value) {
-                return !isNaN(Date.parse(value)) && value > this.checkIn;
-            },
-            message: "La date de fin doit être après la date de début"
-        }
+    checkOut: { 
+        type: Date, 
+        required: [true, "La date de fin de réservation est requise"]
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Reservation', ReservationSchema);
+// Vérification que checkOut est après checkIn
+ReservationSchema.pre("save", function (next) {
+    if (this.checkOut <= this.checkIn) {
+        return next(new Error("La date de fin doit être après la date de début"));
+    }
+    next();
+});
+
+module.exports = mongoose.model("Reservation", ReservationSchema);

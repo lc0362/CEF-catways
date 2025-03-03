@@ -14,7 +14,7 @@
         <p>Chargement des réservations...</p>
     </div>
 
-    <button class="btn-deconnexion">Se déconnecter</button>
+    <button class="btn-deconnexion"><a href="/">Se déconnecter</a></button>
 
     <script>
         async function fetchReservations() {
@@ -43,7 +43,8 @@
 
                         // Paragraphe avec les détails de la réservation
                         const details = document.createElement("p");
-                        details.innerHTML = `<strong>Catway #:</strong> ${reservation.catwayNumber} <br> 
+                        details.innerHTML = `<strong>Catway ID:</strong> ${reservation.catwayId ? reservation.catwayId._id || reservation.catwayId : "Non défini"} <br> 
+                                            <strong>Pont #</strong> ${reservation.catwayId && reservation.catwayId.catwayNumber ? reservation.catwayId.catwayNumber : "Inconnu"} <br>
                                              <strong>Client:</strong> ${reservation.clientName} <br>
                                              <strong>Bateau:</strong> ${reservation.boatName} <br>
                                              <strong>Check-in:</strong> ${new Date(reservation.checkIn).toLocaleString()} <br>

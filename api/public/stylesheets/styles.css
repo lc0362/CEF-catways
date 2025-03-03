@@ -3,8 +3,6 @@
 body {
   padding: 2em;
   font-family: Arial, sans-serif;
-
-  margin-left: 5em;
 }
 
 h1 {
@@ -17,6 +15,10 @@ h1 {
 h2 {
   color : #7f60f7;
   margin-top: 2em;
+}
+
+h3 {
+  margin-top: 3em;
 }
 
 a {
@@ -38,7 +40,6 @@ button {
 button:hover {
   color: black;
   background-color: #d7b6f0;
-
 }
 
 input:hover{
@@ -49,9 +50,17 @@ input:hover{
   margin-top: 3em;
 }
 
-#reservationList {
-  border: #7f60f7;
-  border: solid;
-  border-radius: 10%;
-  padding: 1em;
+img {
+  max-width: 50%;
+}
+
+code {
+  color : #7f60f7;
+}
+
+@media screen and (min-width: 1024px) {
+  body {
+      margin-left: 10em;
+      max-width: 80%;
+  }
 }
