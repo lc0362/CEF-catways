@@ -1,8 +1,10 @@
+const mongoose = require('mongoose'); // Ajoute cette ligne
 const express = require('express');
 const router = express.Router();
 const path = require('path');
 const private = require('../middlewares/private'); 
 
+const Catway = require('../models/catway');
 const service = require('../services/catways');
 const reservationsRoutes = require('./reservations'); 
 
@@ -29,7 +31,7 @@ router.get('/:id', private.checkJWT, async (req, res) => {
           return res.status(400).json({ error: "❌ ID invalide" });
       }
 
-      const catway = await CatwayModel.findById(catwayId);
+      const catway = await Catway.findById(catwayId);
       console.log("📌 Résultat MongoDB :", catway);
 
       if (!catway) {
