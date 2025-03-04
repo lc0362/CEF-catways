@@ -43,16 +43,21 @@
 
                         // Paragraphe avec les détails de la réservation
                         const details = document.createElement("p");
-                        details.innerHTML = `<strong>Catway ID:</strong> ${reservation.catwayId ? reservation.catwayId._id || reservation.catwayId : "Non défini"} <br> 
-                                            <strong>Pont #</strong> ${reservation.catwayId && reservation.catwayId.catwayNumber ? reservation.catwayId.catwayNumber : "Inconnu"} <br>
-                                             <strong>Client:</strong> ${reservation.clientName} <br>
-                                             <strong>Bateau:</strong> ${reservation.boatName} <br>
-                                             <strong>Check-in:</strong> ${new Date(reservation.checkIn).toLocaleString()} <br>
-                                             <strong>Check-out:</strong> ${new Date(reservation.checkOut).toLocaleString()}`;
+                        details.innerHTML = ` <p><strong>Catway ID:</strong> ${reservation.catwayId ? reservation.catwayId._id || reservation.catwayId : "Non défini"} </p> 
+                                              <p><strong>Check-in:</strong> ${new Date(reservation.checkIn).toLocaleDateString()} </p>
+                                              <p><strong>Check-out:</strong> ${new Date(reservation.checkOut).toLocaleDateString()} </p>`;
+
+                        // Bouton "Voir détails" qui redirige vers /details/{id}
+                        const detailsButton = document.createElement("button");
+                        detailsButton.textContent = "Voir détails";
+                        detailsButton.onclick = function() {
+                            window.location.href = `/reservations/details/${reservation._id}`;
+                        };
 
                         // Ajouter les éléments créés dans la div
                         reservationDiv.appendChild(title);
                         reservationDiv.appendChild(details);
+                        reservationDiv.appendChild(detailsButton);
 
                         // Ajouter la div au conteneur principal
                         reservationList.appendChild(reservationDiv);

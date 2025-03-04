@@ -31,4 +31,9 @@ router.post('/', private.checkJWT, service.addReservation);
 // Supprimer une réservation d'un catway
 router.delete('/:idReservation', private.checkJWT, service.deleteReservation);
 
+// La route pour le détail des réservations en fonction de l'id
+router.get('/details/:id', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/components/reservations-detail.html'));
+});
+
 module.exports = router;

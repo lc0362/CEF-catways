@@ -4,7 +4,15 @@ const mongoose = require('mongoose');
 
 exports.getAllReservations = async (req, res) => {
     try {
-        const reservations = await Reservation.find().populate('catwayId'); 
+        let filter = {};
+
+        // Vérifier si un checkIn est fourni en paramètre de requête
+        if (req.query.checkIn) {
+            const checkInDate = new Date(req.query.checkIn);
+            filter.checkIn = { $gte: checkInDate, $lt: new Date(checkInDate.getTime() + 24 * 60 * 60 * 1000) };
+        }
+
+        const reservations = await Reservation.find(filter).populate('catwayId');
         res.json(reservations);
     } catch (err) {
         res.status(500).json({ error: err.message });

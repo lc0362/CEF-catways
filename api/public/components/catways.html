@@ -10,9 +10,9 @@
     <div><a href="/dashboard"><button>Retour sur le tableau de bord principal</button></a></div>
     <h1>🚤 Liste des Catways</h1>
 
-    <ul id="catwayList">
-        <li>Chargement des catways...</li>
-    </ul>
+    <div id="catwayList">
+        <p>Chargement des catways...</p>
+    </div>
 
     <div><a href="/"><button class="btn-deconnexion">Se déconnecter</button></a></div>
 
@@ -41,9 +41,9 @@
                         const title = document.createElement("h2");
                         title.textContent = `Catway ID: ${catway._id}`;
 
-                        // Paragraphe avec le type, l'état et le numéro du pont
+                        // Paragraphe avec le type, l'état et le numéro du ponton
                         const details = document.createElement("p");
-                        details.innerHTML = `<strong>Pont:</strong> #${catway.catwayNumber}`;
+                        details.innerHTML = `<strong>Ponton:</strong> #${catway.catwayNumber}`;
 
                         // Bouton "Voir détails" qui redirige vers /details/{id}
                         const detailsButton = document.createElement("button");

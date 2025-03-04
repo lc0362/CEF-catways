@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord</title>
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+</head>
+<body>
+    <div><a href="/reservations/list"><button>Retour sur la liste des réservations</button></a></div>
+    <h1>⛵ Détails de la Réservation</h1> 
+
+    <div id="reservationDetails">
+        <p>Chargement des détails...</p>
+    </div>
+
+    <div>
+        <button class="btn-delete" onclick="deleteReservation()">❌ Supprimer la réservation</button>
+    </div>
+
+    <div><a href="/"><button class="btn-deconnexion">Se déconnecter</button></a></div>
+
+    <script>
+        let reservationId = null; // Stocker l'ID de la réservation pour la suppression
+
+        async function fetchReservationDetails() {
+            // Récupérer l'ID depuis l'URL
+            reservationId = window.location.pathname.split("/").pop().trim();
+            
+            if (!reservationId || reservationId.length < 24) { 
+                document.getElementById("reservationDetails").innerHTML = "<p>❌ ID Réservation invalide.</p>";
+                return;
+            }
+
+            try {
+                const response = await fetch(`/reservations/${reservationId}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                const reservation = await response.json();
+                const detailsDiv = document.getElementById("reservationDetails");
+
+                if (response.ok) {
+                    detailsDiv.innerHTML = `
+                        <h2>Réservation ID: ${reservation._id}</h2>
+                        <p><strong>Client:</strong> ${reservation.clientName}</p>
+                        <p><strong>Bateau:</strong> ${reservation.boatName}</p>
+                        <p><strong>Check-in:</strong> ${new Date(reservation.checkIn).toLocaleDateString()}</p>
+                        <p><strong>Check-out:</strong> ${new Date(reservation.checkOut).toLocaleDateString()}</p>
+                        <p><strong>Catway:</strong> ${reservation.catwayId ? reservation.catwayId.catwayNumber : "Non spécifié"}</p>
+                    `;
+                } else {
+                    detailsDiv.innerHTML = `<p>❌ Erreur : ${reservation.error || "Impossible de récupérer les détails."}</p>`;
+                }
+
+            } catch (error) {
+                document.getElementById("reservationDetails").innerHTML = `<p>❌ Erreur inattendue : ${error.message}</p>`;
+            }
+        }
+
+        async function deleteReservation() {
+            if (!reservationId) return;
+
+            const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette réservation ?");
+            if (!confirmation) return;
+
+            try {
+                const response = await fetch(`/reservations/${reservationId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                if (response.ok) {
+                    alert("✅ Réservation supprimée avec succès !");
+                    window.location.href = "/reservations/list";
+                } else {
+                    const errorData = await response.json();
+                    alert("❌ Erreur lors de la suppression : " + (errorData.error || "Impossible de supprimer."));
+                }
+            } catch (error) {
+                alert("❌ Erreur inattendue : " + error.message);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "/";
+        }
+
+        // Charger les détails au chargement de la page
+        document.addEventListener("DOMContentLoaded", fetchReservationDetails);
+    </script>
+</body>
+</html>

@@ -32,6 +32,7 @@
             <li><a href="#reservation-delete">Supprimer une Réservation</a></li>
         </ul>
             <div><a href="#examples" class="bold">Exemples</a></div>
+            <div><a href="#glossaire" class="bold">Glossaire</a></div>
         </ul>
         <h2 id="about">⚓️ Vue d'ensemble</h2>
         <p>Application web de gestion des réservations de catway (petit appontement pour amarrer un bateau) du port de plaisance de Russell.</p>
@@ -141,13 +142,55 @@
         <div><a href="#top"><button class="btn-top">Remonter en haut de la page</button></a></div>
 
         <h2 id="examples">🤔 Exemples</h2>
+        <ul>
+            <li><strong>Scénario 1</strong> : Vérifier la liste des réservations de la journée avant l'arrivée des bateaux</li>
+            <p>Sur Postman, faire un GET de <code>http://localhost:8080/reservations</code>. <br>
+                Filtrer les résultats dans "Params" avec checkIn et la date en format AAA-MM-JJ pour voir les bateaux qui arrivent un jour précis.</p>
+            <img src="/images/reservation-postman-checkin.jpg" alt="Filtre checkin reservations sur postman">
+            <p>Sur le serveur, cliquer sur Consulter les listes > 📆 Liste des Réservations.</p>
+
+            <li><strong>Scénario 2</strong> : Un orage a endommagé certains catways.</li>
+            <p>Sur Postman, faire un PATCH de <code>http://localhost:8080/catways/IDCATWAY</code>, avec en Key "catwayState" et en Value "En maintenance".</p> 
+            <p>Sur le serveur, aller sur le tableau de bord > Gestion des catways > Modifier un catway. Entrer l'ID du catway et son nouveau état dans le champ.</p>
+
+            <li><strong>Scénario 3</strong> : Un employé a été muté, il faut supprimer l'utilisateur pour éviter des problèmes de sécurité.</li>
+            <p>Sur Postman, faire un GET de <code>http://localhost:8080/users</code> pour vérifier tous les utilisateurs existants.<br>
+                Récupérer l'ID de l'utilisateur souhaité pour faire un DELETE <code>http://localhost:8080/users/delete/IDUSER</code>.<br>
+                Un message de confirmation s'affiche. On peut vérifier la suppression en refaisant un GET de <code>http://localhost:8080/users</code>.</p> 
+            <p>Sur le serveur, aller sur le tableau de bord > Gestion des utilisateurs > Supprimer un utilisateur. Entrer l'ID de l'utilisateur et cliquer sur Supprimer.</p>
+        </ul>
         
+
+
+        <h2 id="glossaire">📖 Glossaire</h2>
+        <p>Liste alphabétique des termes spécifiques du projet.</p>
+        <ul class="glossaire"> 
+            <strong>Concepts métier</strong>
+        <ul> 
+            <li><strong>API REST</strong> (Representational State Transfer) : Architecture permettant la communication entre le frontend et le backend via des requêtes HTTP (<code>GET</code>, <code>POST</code>, <code>PATCH</code>, <code>DELETE</code>).</li> 
+            <li><strong>Catway</strong> : Emplacement destiné à l'amarrage d’un bateau. Il est identifié par un ID unique au sein de la base de données.</li> 
+            <li><strong>Check-In, Check-Out</strong> : Date et heure prévues d’arrivée et de départ du bateau au catway (format ISO <code>YYYY-MM-DDTHH:mm:ssZ</code>).</li> 
+            <li><strong>État du Catway</strong> : Indicateur de l'état du catway (ex. <code>Libre</code>, <code>Occupé</code>, <code>Réservé</code>, <code>En maintenance</code>).</li> 
+            <li><strong>Ponton</strong> : Portion de quai flottant qui peut être associée à plusieurs catways.</li> 
+            <li><strong>Type de Catway</strong> : Catégorie du catway, pouvant être <code>long</code> ou <code>short</code>, définissant la taille des bateaux qu'il peut accueillir.</li> 
+            <li><strong>Utilisateur</strong> : Personne qui a l'autorisation de se connecter à l'application pour consulter, ajouter, modifier ou supprimer des autres utilisateurs, des catways et des réservations.</li> 
+        </ul>
+        </ul>
+        <ul class="glossaire"> 
+            <strong>Outils techniques</strong>
+        <ul> 
+            <li><strong>Express.js</strong> : Framework backend pour Node.js permettant de créer des applications web et APIs rapidement avec un système de routage et de gestion des requêtes HTTP.</li> 
+            <li><strong>Fetch API</strong> : Méthode JavaScript utilisée côté frontend pour envoyer des requêtes HTTP à l'API backend.</li> 
+            <li><strong>JSON</strong> (JavaScript Object Notation) : Format d’échange de données utilisé entre le frontend et le backend.</li> 
+            <li><strong>Middleware</strong> : Fonction intermédiaire dans Express.js utilisée pour gérer la sécurité, la validation et les autorisations.</li> 
+            <li><strong>MongoDB</strong> : Base de données NoSQL orientée documents utilisée pour stocker les catways et les réservations.</li> 
+            <li><strong>MongoDB Compass</strong> : Interface graphique permettant de visualiser, manipuler et interagir avec les données stockées dans MongoDB sans passer par la ligne de commande.</li> 
+            <li><strong>Mongoose</strong> : ODM (*Object Data Modeling*) pour MongoDB permettant d'interagir avec la base en utilisant des schémas et des modèles JavaScript.</li> 
+            <li><strong>Postman</strong> : Outil permettant de tester les requêtes API (<code>GET</code>, <code>POST</code>, <code>DELETE</code>, etc.) et de simuler les interactions avec le backend sans passer par l'interface utilisateur.</li> 
+            <li><strong>Token JWT</strong> (JSON Web Token) : Jeton de sécurité utilisé pour authentifier et autoriser les utilisateurs à effectuer des actions sur l'API.</li> 
+        </ul>
+        </ul>
         <div><a href="#top"><button class="btn-top">Remonter en haut de la page</button></a></div>
-
-
-
-
     </div>
-    
 </body>
 </html>
