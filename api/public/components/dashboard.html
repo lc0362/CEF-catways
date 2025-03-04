@@ -6,10 +6,17 @@
     <title>Tableau de Bord</title>
     <link rel="stylesheet" href="/stylesheets/styles.css">
 </head>
-<body>
+<body id="top">
     <h1>Tableau de Bord</h1>
 
-    <h2>Gestion des utilisateurs</h2>
+    <ul>
+        <li><a href="#manage-user">Gestion des utilisateurs</a></li>
+        <li><a href="#manage-catways">Gestion des catways</a></li>
+        <li><a href="#manage-reservations">Gestion des réservations</a></li>
+        <li><a href="#see-lists">Consulter les listes</a></li>
+    </ul>
+
+    <h2 id="manage-user">Gestion des utilisateurs</h2>
 
     <!-- Formulaire pour créer un utilisateur -->
     <h3>Créer un utilisateur</h3>
@@ -38,8 +45,9 @@
         <button type="submit">Supprimer</button>
     </form>
     <div id="deleteUserMessage"></div>
+    <div><a href="#top"><button class="btn-top">Remonter en haut de la page</button></a></div>
 
-    <h2>Gestion des catways</h2>
+    <h2 id="manage-catways">Gestion des catways</h2>
 
     <!-- Formulaire pour créer un catway -->
     <h3>Créer un catway</h3>
@@ -70,8 +78,9 @@
         <button type="submit">Supprimer</button>
     </form>
     <div id="deleteCatwayMessage"></div>
+    <div><a href="#top"><button class="btn-top">Remonter en haut de la page</button></a></div>
 
-    <h2>Gestion des réservations</h2>
+    <h2 id="manage-reservations">Gestion des réservations</h2>
     <!-- Formulaire pour enregistrer une réservation -->
     <h3>Créer une réservation</h3>
     <form id="createReservationForm">
@@ -90,17 +99,19 @@
         <button type="submit">Supprimer</button>
     </form>
     <div id="deleteReservationMessage"></div>
+    <div><a href="#top"><button class="btn-top">Remonter en haut de la page</button></a></div>
 
 
 
     <!-- Liens vers les listes -->
-    <h2>Consulter les listes</h2>
+    <h2 id="see-lists">Consulter les listes</h2>
     <ul>
         <li><a href="/catways/list">🚤 Liste des Catways</a></li>
         <li><a href="/reservations/list">📆 Liste des Réservations</a></li>
     </ul>
 
-    <button class="btn-deconnexion"><a href="/">Se déconnecter</a></button>
+    <div><a href="#top"><button class="btn-top">Remonter en haut de la page</button></a></div>
+    <div><button class="btn-deconnexion"><a href="/">Se déconnecter</a></button></div>
     <div id="messageBox" style="display: none; padding: 10px; margin-top: 10px;"></div>
 
     <script src="/script.js"></script>

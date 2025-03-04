@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Sigmar&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Sigmar&display=swap');
 
 body {
   padding: 2em;
-  font-family: Arial, sans-serif;
+  font-family: "Nunito", Arial, sans-serif;
 }
 
 h1 {
@@ -23,6 +24,7 @@ h3 {
 
 a {
   color: #a557de;
+  font-family: "Nunito", Arial, sans-serif;
 }
 
 a:hover {
@@ -44,16 +46,29 @@ button {
 button:hover {
   color: black;
   background-color: #d7b6f0;
+  cursor: pointer;
 }
 
 input:hover{
   border-color: black;
 }
 
-.btn-deconnexion {
-  margin-top: 4em;
+.btn-top {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  background-color: #edeeff;
 }
 
+.btn-top:hover {
+  background-color: #d7b6f0;
+  cursor: pointer;
+}
+
+
+
+.btn-deconnexion {
+  margin-top: 1em;
+}
 .bold {
   font-weight: 700;
 }
@@ -76,4 +91,9 @@ code {
     min-width: 200px;
     max-width: 800px;
   }
+}
+
+#loginForm  {
+  line-height: 3;
+  margin-bottom: 3em;
 }

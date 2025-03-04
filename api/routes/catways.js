@@ -19,7 +19,31 @@ router.get('/list', (req, res) => {
 });
 
 // La route pour lire les infos d'un catway spécifique
-router.get('/:id', private.checkJWT, service.getById);
+router.get('/:id', private.checkJWT, async (req, res) => {
+  try {
+      const catwayId = req.params.id;
+      console.log("📌 ID reçu par le serveur :", catwayId);
+
+      if (!mongoose.Types.ObjectId.isValid(catwayId)) {
+          console.log("❌ ID invalide reçu :", catwayId);
+          return res.status(400).json({ error: "❌ ID invalide" });
+      }
+
+      const catway = await CatwayModel.findById(catwayId);
+      console.log("📌 Résultat MongoDB :", catway);
+
+      if (!catway) {
+          console.log("❌ Catway non trouvé :", catwayId);
+          return res.status(404).json({ error: "❌ Catway non trouvé" });
+      }
+
+      res.json(catway);
+  } catch (error) {
+      console.error("❌ Erreur serveur :", error);
+      res.status(500).json({ error: "❌ Erreur serveur", details: error.message });
+  }
+});
+
 
 // La route pour ajouter un catway
 router.post('/add', private.checkJWT, service.add);
@@ -36,6 +60,9 @@ router.use('/:id/reservations', (req, res, next) => {
   next();
 }, reservationsRoutes);
 
-
+// La route pour le détail des catways en fonction de l'id
+router.get('/details/:id', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/components/catways-detail.html'));
+});
 
 module.exports = router;

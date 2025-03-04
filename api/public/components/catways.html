@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/stylesheets/styles.css">
 </head>
 <body>
-    <button><a href="/dashboard">Retour sur le tableau de bord principal</a></button>
+    <div><a href="/dashboard"><button>Retour sur le tableau de bord principal</button></a></div>
     <h1>🚤 Liste des Catways</h1>
 
     <ul id="catwayList">
@@ -37,19 +37,27 @@
                         const catwayDiv = document.createElement("div");
                         catwayDiv.classList.add("catway-item");
 
-                        // Titre avec le numéro du catway
+                        // Titre avec l'id du catway
                         const title = document.createElement("h2");
                         title.textContent = `Catway ID: ${catway._id}`;
 
-                        // Paragraphe avec le type, l'état et l'ID
+                        // Paragraphe avec le type, l'état et le numéro du pont
                         const details = document.createElement("p");
                         details.innerHTML = `<strong>Pont:</strong> #${catway.catwayNumber} <br> 
                                              <strong>Type:</strong> ${catway.catwayType} <br>
                                              <strong>État:</strong> ${catway.catwayState}`;
 
+                        // Bouton "Voir détails" qui redirige vers /details/{id}
+                        const detailsButton = document.createElement("button");
+                        detailsButton.textContent = "Voir détails";
+                        detailsButton.onclick = function() {
+                            window.location.href = `/catways/details/${catway._id}`;
+                        };
+
                         // Ajouter les éléments créés dans la div
                         catwayDiv.appendChild(title);
                         catwayDiv.appendChild(details);
+                        catwayDiv.appendChild(detailsButton);
 
                         // Ajouter la div au conteneur principal
                         catwayList.appendChild(catwayDiv);

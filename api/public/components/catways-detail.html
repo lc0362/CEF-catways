@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord</title>
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+</head>
+<body>
+    <div><a href="/catways/list"><button>Retour sur la liste des catways</button></a></div>
+    <h1>🚤 Détails du Catway </h1> 
+
+    <div id="catwayDetails">
+        <p>Chargement des détails...</p>
+    </div>
+
+    <button class="btn-deconnexion" onclick="logout()">Se déconnecter</button>
+
+    <script>
+        async function fetchCatwayDetails() {
+            // Récupérer l'ID depuis l'URL
+            const catwayId = window.location.pathname.split("/").pop().trim();
+
+            console.log("📌 ID récupéré :", catwayId); // ✅ Vérification ID récupéré
+
+            if (!catwayId || catwayId.length < 24) { // Vérification longueur ID
+                document.getElementById("catwayDetails").innerHTML = "<p>❌ ID Catway invalide.</p>";
+                return;
+            }
+
+            try {
+                const response = await fetch(`/catways/${catwayId}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                console.log("📡 Requête envoyée à :", `/catways/${catwayId}`); // ✅ Vérifier URL API
+
+                const catway = await response.json();
+                const detailsDiv = document.getElementById("catwayDetails");
+
+                if (response.ok) {
+                    detailsDiv.innerHTML = `
+                        <h2>Catway ID: ${catway._id}</h2>
+                        <p><strong>Pont:</strong> #${catway.catwayNumber}</p>
+                        <p><strong>Type:</strong> ${catway.catwayType}</p>
+                        <p><strong>État:</strong> ${catway.catwayState}</p>
+                    `;
+                } else {
+                    console.error("❌ Erreur API :", catway); // ✅ Afficher erreur renvoyée par l'API
+                    detailsDiv.innerHTML = `<p>❌ Erreur : ${catway.error || "Impossible de récupérer les détails."}</p>`;
+                }
+
+            } catch (error) {
+                console.error("❌ Erreur inattendue :", error); // ✅ Vérifier erreur JavaScript
+                document.getElementById("catwayDetails").innerHTML = `<p>❌ Erreur inattendue : ${error.message}</p>`;
+            }
+        }
+
+
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "/";
+        }
+
+        // Charger les détails au chargement de la page
+        document.addEventListener("DOMContentLoaded", fetchCatwayDetails);
+    </script>
+</body>
+</html>
