@@ -15,8 +15,7 @@ var app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Ici le * signifie que nous souhaitons accepter toutes les requêtes 
-// entrantes de tous les domaines, externes ou non
+// Ici le * signifie que nous souhaitons accepter toutes les requêtes entrantes de tous les domaines, externes ou non
 app.use(cors({
     exposedHeaders: ['Authorization'],
     origin: '*'

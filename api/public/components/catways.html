@@ -43,9 +43,7 @@
 
                         // Paragraphe avec le type, l'état et le numéro du pont
                         const details = document.createElement("p");
-                        details.innerHTML = `<strong>Pont:</strong> #${catway.catwayNumber} <br> 
-                                             <strong>Type:</strong> ${catway.catwayType} <br>
-                                             <strong>État:</strong> ${catway.catwayState}`;
+                        details.innerHTML = `<strong>Pont:</strong> #${catway.catwayNumber}`;
 
                         // Bouton "Voir détails" qui redirige vers /details/{id}
                         const detailsButton = document.createElement("button");

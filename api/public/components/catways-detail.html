@@ -21,10 +21,8 @@
             // Récupérer l'ID depuis l'URL
             const catwayId = window.location.pathname.split("/").pop().trim();
 
-            console.log("📌 ID récupéré :", catwayId); // ✅ Vérification ID récupéré
-
-            if (!catwayId || catwayId.length < 24) { // Vérification longueur ID
-                document.getElementById("catwayDetails").innerHTML = "<p>❌ ID Catway invalide.</p>";
+            if (!catwayId || catwayId.length < 24) { 
+                document.getElementById("catwayDetails").innerHTML = "<p>ID Catway invalide.</p>";
                 return;
             }
 
@@ -37,7 +35,6 @@
                     }
                 });
 
-                console.log("📡 Requête envoyée à :", `/catways/${catwayId}`); // ✅ Vérifier URL API
 
                 const catway = await response.json();
                 const detailsDiv = document.getElementById("catwayDetails");
@@ -50,13 +47,11 @@
                         <p><strong>État:</strong> ${catway.catwayState}</p>
                     `;
                 } else {
-                    console.error("❌ Erreur API :", catway); // ✅ Afficher erreur renvoyée par l'API
-                    detailsDiv.innerHTML = `<p>❌ Erreur : ${catway.error || "Impossible de récupérer les détails."}</p>`;
+                    detailsDiv.innerHTML = `<p>Erreur : ${catway.error || "Impossible de récupérer les détails."}</p>`;
                 }
 
             } catch (error) {
-                console.error("❌ Erreur inattendue :", error); // ✅ Vérifier erreur JavaScript
-                document.getElementById("catwayDetails").innerHTML = `<p>❌ Erreur inattendue : ${error.message}</p>`;
+                document.getElementById("catwayDetails").innerHTML = `<p>Erreur inattendue : ${error.message}</p>`;
             }
         }
 
