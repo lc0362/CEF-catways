@@ -31,7 +31,7 @@ jobs:
           echo "PORT=8080" >> $GITHUB_ENV
           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
           echo "NODE_ENV=production" >> $GITHUB_ENV
-        
+
       - name: Vérification des variables d'environnement 
         run: |
           echo "Vérification des variables d'environnement..."
@@ -39,15 +39,20 @@ jobs:
           echo "SECRET_KEY=$SECRET_KEY"
           echo "PORT=$PORT"
 
+      - name: Lancement manuel du serveur pour debug
+        run: |
+          echo "Lancement manuel de l'API pour voir les erreurs..."
+          node server.js || exit 1
+
       - name: Lancement de l'API en arrière-plan
         run: |
-          echo "Démarrage de l'API..."
+          echo "Démarrage de l'API avec nohup..."
           nohup env DB_URI=$DB_URI SECRET_KEY=$SECRET_KEY PORT=8080 NODE_ENV=production node server.js > nohup.out 2>&1 &
           sleep 15
           
           echo "Affichage des processus Node.js actifs..."
           ps aux | grep node
-          
+
           echo "Vérification du démarrage de l'API..."
           cat nohup.out || echo "Aucun log disponible"
 
@@ -67,7 +72,7 @@ jobs:
       - name: Vérification des fichiers créés
         run: |
           ls -la
-      
+
       - name: Vérification des logs de l'API
         run: |
           sleep 5
