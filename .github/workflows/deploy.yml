@@ -39,17 +39,21 @@ jobs:
           echo "SECRET_KEY=$SECRET_KEY"
           echo "PORT=$PORT"
 
-      - name: Lancement manuel du serveur pour debug
+      - name: Test de connexion à MongoDB
+        run: |
+          echo "Vérification de la connexion MongoDB..."
+          nc -zv $(echo $DB_URI | sed 's/mongodb:\/\/\([^:/]*\).*/\1/') 27017 || echo "Connexion MongoDB échouée"
+
+      - name: Lancement manuel de l'API pour voir les erreurs
         run: |
           echo "Lancement manuel de l'API pour voir les erreurs..."
           node server.js || true
           echo "Affichage des logs d'erreur :"
-          cat nohup.out || echo "Aucun log trouvé"
-
+          tail -n 50 nohup.out || echo "Aucun log trouvé"
 
       - name: Lancement de l'API en arrière-plan
         run: |
-          echo "Démarrage de l'API avec nohup..."
+          echo "Démarrage de l'API..."
           nohup env DB_URI=$DB_URI SECRET_KEY=$SECRET_KEY PORT=8080 NODE_ENV=production node server.js > nohup.out 2>&1 &
           sleep 15
           
@@ -57,43 +61,42 @@ jobs:
           ps aux | grep node
 
           echo "Vérification du démarrage de l'API..."
-          cat nohup.out || echo "Aucun log disponible"
+          tail -n 50 nohup.out || echo "Aucun log disponible"
 
           for i in {1..10}; do
             if curl -s http://localhost:8080/catways; then
-              echo "L'API est bien démarrée !"
+              echo "L'API est bien démarrée"
               exit 0
             fi
-            echo "Tentative $i/10 : L'API n'est pas encore prête..."
+            echo "Tentative $i/10 : L'API n'est pas encore prête"
             sleep 3
           done
 
-          echo "L'API ne répond toujours pas après plusieurs tentatives !"
-          cat nohup.out
+          echo "L'API ne répond toujours pas après plusieurs tentatives"
+          tail -n 50 nohup.out
           exit 1
 
       - name: Vérification des fichiers créés
-        run: |
-          ls -la
+        run: ls -la
 
       - name: Vérification des logs de l'API
         run: |
           sleep 5
           echo "Logs récents de l'API :"
-          tail -n 50 nohup.out || echo "Aucun log trouvé."
+          tail -n 50 nohup.out || echo "Aucun log trouvé"
 
       - name: Vérification du serveur
         run: |
           echo "Attente du démarrage de l'API..."
           for i in {1..10}; do
             if curl -s http://localhost:8080/catways; then
-              echo "L'API est bien démarrée !"
+              echo "L'API est bien démarrée"
               exit 0
             fi
-            echo "Tentative $i/10 : L'API n'est pas encore prête..."
+            echo "Tentative $i/10 : L'API n'est pas encore prête"
             sleep 3
           done
-          echo "L'API ne répond toujours pas après 30 secondes !"
+          echo "L'API ne répond toujours pas après 30 secondes"
           tail -n 50 nohup.out
           exit 1
 
@@ -105,7 +108,7 @@ jobs:
           -d "{\"email\": \"${{ secrets.EMAIL_ADMIN }}\", \"password\": \"${{ secrets.PASSWORD_ADMIN }}\"}" | jq -r .token)
 
           if [[ -z "$TOKEN" || "$TOKEN" == "null" ]]; then
-            echo "Échec de l'authentification !"
+            echo "Échec de l'authentification"
             curl -s -X POST "http://localhost:8080/auth/login" -H "Content-Type: application/json" -d "{\"email\": \"${{ secrets.EMAIL_ADMIN }}\", \"password\": \"${{ secrets.PASSWORD_ADMIN }}\"}"
             exit 1
           fi
