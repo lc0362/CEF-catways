@@ -27,18 +27,17 @@ jobs:
 
       - name: Lancement de l'API en arrière-plan
         run: |
+          cd api 
           npm start &
-          sleep 5 # Attendre 5 secondes pour que le serveur démarre
+          sleep 10 # Attendre 10 secondes pour que le serveur démarre
 
       - name: 🔍 Vérification du serveur
         run: |
-          echo "📡 Vérification de l'API..."
-          if ! curl -s http://localhost:8080/health; then
-            echo "❌ L'API ne répond pas !"
-            exit 1
-          fi
+          echo "Vérification de l'API..."
+          sleep 3
+          curl -I http://localhost:8080 || (echo "❌ L'API ne répond pas !" && exit 1)
 
-      - name: 🔑 Récupération du Token d'authentification pour les tests
+      - name: Récupération du Token d'authentification pour les tests
         run: |
           echo "Tentative d'authentification..."
           TOKEN=$(curl -s -X POST "http://localhost:8080/auth/login" \
@@ -54,7 +53,7 @@ jobs:
           echo "🟢 Token récupéré avec succès"
 
 
-      - name: 🧪 Exécution des tests avec Mocha
+      - name: Exécution des tests avec Mocha
         run: |
           cd api/mocha_test
           npm test
