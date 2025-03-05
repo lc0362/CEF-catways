@@ -32,7 +32,11 @@ jobs:
 
       - name: 🔍 Vérification du serveur
         run: |
-          curl -I http://localhost:8080 || echo "❌ L'API ne répond pas !"
+          echo "📡 Vérification de l'API..."
+          if ! curl -s http://localhost:8080/health; then
+            echo "❌ L'API ne répond pas !"
+            exit 1
+          fi
 
       - name: 🔑 Récupération du Token d'authentification pour les tests
         run: |
