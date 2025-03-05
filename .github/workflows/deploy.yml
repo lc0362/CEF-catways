@@ -34,48 +34,52 @@ jobs:
         
       - name: Vérification des variables d'environnement 
         run: |
-          echo "🔍 Vérification des variables d'environnement..."
+          echo "Vérification des variables d'environnement..."
           echo "DB_URI=$DB_URI"
           echo "SECRET_KEY=$SECRET_KEY"
           echo "PORT=$PORT"
 
-
       - name: Lancement de l'API en arrière-plan
         run: |
-          cd api 
+          cd api
           echo "Démarrage de l'API avec nohup..."
-          nohup npm start > logs.log 2>&1 &
+          nohup npm start > nohup.out 2>&1 &
           sleep 10
           echo "Affichage des processus Node.js actifs..."
           ps aux | grep node
-          echo "🔍 Vérification du démarrage de l'API..."
+          echo "Vérification du démarrage de l'API..."
 
-          if ! grep -q "🚀 Serveur démarré" api/logs.log; then
-            echo "❌ L'API ne semble pas avoir démarré !"
-            cat api/logs.log
+          if ! grep -q "Serveur démarré" nohup.out; then
+            echo "L'API ne semble pas avoir démarré !"
+            cat nohup.out
             exit 1
           fi
+
+      - name: Vérification des fichiers créés
+        run: |
+          ls -la api
+          ls -la
 
       - name: Vérification des logs de l'API
         run: |
           sleep 5
           echo "Logs récents de l'API :"
-          tail -n 50 logs.log || echo "Aucun log trouvé."
-          
-      - name: 🔍 Vérification du serveur
+          tail -n 50 nohup.out || echo "Aucun log trouvé."
+
+      - name: Vérification du serveur
         run: |
-          echo "⏳ Attente du démarrage de l'API..."
+          echo "Attente du démarrage de l'API..."
           /bin/bash -c '
           for i in {1..10}; do
             if curl -s http://localhost:8080/catways; then
-              echo "✅ L'API est bien démarrée !"
+              echo "L'API est bien démarrée !"
               exit 0
             fi
-            echo "⏳ Tentative $i/10 : L'API n'est pas encore prête..."
+            echo "Tentative $i/10 : L'API n'est pas encore prête..."
             sleep 3
           done
-          echo "❌ L'API ne répond toujours pas après 30 secondes !"
-          cat logs.log
+          echo "L'API ne répond toujours pas après 30 secondes !"
+          tail -n 50 nohup.out
           exit 1
           '
 
@@ -87,14 +91,13 @@ jobs:
           -d "{\"email\": \"${{ secrets.EMAIL_ADMIN }}\", \"password\": \"${{ secrets.PASSWORD_ADMIN }}\"}" | jq -r .token)
 
           if [[ -z "$TOKEN" || "$TOKEN" == "null" ]]; then
-            echo "❌ Échec de l'authentification !"
+            echo "Échec de l'authentification !"
             curl -s -X POST "http://localhost:8080/auth/login" -H "Content-Type: application/json" -d "{\"email\": \"${{ secrets.EMAIL_ADMIN }}\", \"password\": \"${{ secrets.PASSWORD_ADMIN }}\"}"
             exit 1
           fi
           
           echo "TOKEN=$TOKEN" >> $GITHUB_ENV
-          echo "🟢 Token récupéré avec succès"
-
+          echo "Token récupéré avec succès"
 
       - name: Exécution des tests avec Mocha
         run: |
@@ -110,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇Récupération du code source
+      - name: Récupération du code source
         uses: actions/checkout@v3
 
       - name: Déploiement sur le serveur
