@@ -25,13 +25,22 @@ jobs:
       - name: Installation des dépendances
         run: npm install
 
+      - name: Configuration des variables d'environnement
+        run: |
+          echo "DB_URI=${{ secrets.URL_MONGO }}" >> $GITHUB_ENV
+          echo "PORT=8080" >> $GITHUB_ENV
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+
       - name: Lancement de l'API en arrière-plan
         run: |
           cd api 
+          echo "Démarrage de l'API avec les variables d'environnement..."
+          env | grep DB_URI  # Vérifier si DB_URI est bien défini
           npm start &
           sleep 10 # Attendre 10 secondes pour que le serveur démarre
           echo "Affichage des logs du serveur..."
           ps aux | grep node
+
 
       - name: 🔍 Vérification du serveur
         run: |
