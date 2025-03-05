@@ -42,7 +42,10 @@ jobs:
       - name: Lancement manuel du serveur pour debug
         run: |
           echo "Lancement manuel de l'API pour voir les erreurs..."
-          node server.js || exit 1
+          node server.js || true
+          echo "Affichage des logs d'erreur :"
+          cat nohup.out || echo "Aucun log trouvé"
+
 
       - name: Lancement de l'API en arrière-plan
         run: |
