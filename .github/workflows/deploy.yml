@@ -30,33 +30,65 @@ jobs:
           echo "DB_URI=${{ secrets.URL_MONGO }}" >> $GITHUB_ENV
           echo "PORT=8080" >> $GITHUB_ENV
           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          echo "NODE_ENV=production" >> $GITHUB_ENV
+        
+      - name: Vérification des variables d'environnement 
+        run: |
+          echo "🔍 Vérification des variables d'environnement..."
+          echo "DB_URI=$DB_URI"
+          echo "SECRET_KEY=$SECRET_KEY"
+          echo "PORT=$PORT"
+
 
       - name: Lancement de l'API en arrière-plan
         run: |
           cd api 
-          echo "Démarrage de l'API avec les variables d'environnement..."
-          env | grep DB_URI  # Vérifier si DB_URI est bien défini
-          npm start &
-          sleep 10 # Attendre 10 secondes pour que le serveur démarre
-          echo "Affichage des logs du serveur..."
+          echo "Démarrage de l'API avec nohup..."
+          nohup npm start > logs.log 2>&1 &
+          sleep 10
+          echo "Affichage des processus Node.js actifs..."
           ps aux | grep node
+          echo "🔍 Vérification du démarrage de l'API..."
 
+          if ! grep -q "🚀 Serveur démarré" api/logs.log; then
+            echo "❌ L'API ne semble pas avoir démarré !"
+            cat api/logs.log
+            exit 1
+          fi
 
+      - name: Vérification des logs de l'API
+        run: |
+          sleep 5
+          echo "Logs récents de l'API :"
+          tail -n 50 logs.log || echo "Aucun log trouvé."
+          
       - name: 🔍 Vérification du serveur
         run: |
-          echo "Vérification de l'API..."
-          sleep 3
-          curl -I http://localhost:8080 || (echo "❌ L'API ne répond pas !" && exit 1)
+          echo "⏳ Attente du démarrage de l'API..."
+          /bin/bash -c '
+          for i in {1..10}; do
+            if curl -s http://localhost:8080/catways; then
+              echo "✅ L'API est bien démarrée !"
+              exit 0
+            fi
+            echo "⏳ Tentative $i/10 : L'API n'est pas encore prête..."
+            sleep 3
+          done
+          echo "❌ L'API ne répond toujours pas après 30 secondes !"
+          cat logs.log
+          exit 1
+          '
 
       - name: Récupération du Token d'authentification pour les tests
         run: |
           echo "Tentative d'authentification..."
           TOKEN=$(curl -s -X POST "http://localhost:8080/auth/login" \
           -H "Content-Type: application/json" \
-          -d '{"email": "${{ secrets.EMAIL_ADMIN }}", "password": "${{ secrets.PASSWORD_ADMIN }}"}' | jq -r .token)
-          
+          -d "{\"email\": \"${{ secrets.EMAIL_ADMIN }}\", \"password\": \"${{ secrets.PASSWORD_ADMIN }}\"}" | jq -r .token)
+
           if [[ -z "$TOKEN" || "$TOKEN" == "null" ]]; then
-            echo "❌ Échec de l'authentification, aucun token récupéré."
+            echo "❌ Échec de l'authentification !"
+            curl -s -X POST "http://localhost:8080/auth/login" -H "Content-Type: application/json" -d "{\"email\": \"${{ secrets.EMAIL_ADMIN }}\", \"password\": \"${{ secrets.PASSWORD_ADMIN }}\"}"
             exit 1
           fi
           
@@ -88,7 +120,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd ../../api
+            cd api
             git pull origin main
             npm install
+            sleep 5
             pm2 restart api

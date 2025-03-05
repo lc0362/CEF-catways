@@ -14,4 +14,9 @@ const server = http.createServer(app);
 
 server.listen(port, () => {
     console.log(`🚀 Serveur démarré sur http://localhost:${port}`);
+    console.log("🔍 Variables d'environnement :");
+    console.log("DB_URI:", process.env.DB_URI);
+    console.log("PORT:", process.env.PORT);
+    console.log("SECRET_KEY:", process.env.SECRET_KEY);
+
 });
