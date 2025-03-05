@@ -30,20 +30,25 @@ jobs:
           npm start &
           sleep 5 # Attendre 5 secondes pour que le serveur démarre
 
-      - name: Récupération du Token d'authentification pour les tests
+      - name: 🔍 Vérification du serveur
+        run: |
+          curl -I http://localhost:8080 || echo "❌ L'API ne répond pas !"
+
+      - name: 🔑 Récupération du Token d'authentification pour les tests
         run: |
           echo "Tentative d'authentification..."
           TOKEN=$(curl -s -X POST "http://localhost:8080/auth/login" \
           -H "Content-Type: application/json" \
           -d '{"email": "${{ secrets.EMAIL_ADMIN }}", "password": "${{ secrets.PASSWORD_ADMIN }}"}' | jq -r .token)
           
-          if [[ "$TOKEN" == "null" || -z "$TOKEN" ]]; then
+          if [[ -z "$TOKEN" || "$TOKEN" == "null" ]]; then
             echo "❌ Échec de l'authentification, aucun token récupéré."
             exit 1
           fi
-
+          
           echo "TOKEN=$TOKEN" >> $GITHUB_ENV
           echo "🟢 Token récupéré avec succès"
+
 
       - name: 🧪 Exécution des tests avec Mocha
         run: |
