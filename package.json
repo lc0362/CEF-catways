@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "env-cmd -f ./env/.env node server.js",
+    "start": "node server.js",
     "dev": "env-cmd -f ./env/.env.dev nodemon server.js",
     "prod": "env-cmd -f ./env/.env.prod node server.js",
     "test": "mocha"
-  },
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

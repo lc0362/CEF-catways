@@ -1,4 +1,6 @@
-require('dotenv').config({ path: './env/.env' });
+if (!process.env.DB_URI) {
+    require('dotenv').config({ path: './env/.env' });
+}
 
 // Importe la fonction d'initialisation de MongoDB
 const { initClientDbConnection } = require('./api/db/mongo');

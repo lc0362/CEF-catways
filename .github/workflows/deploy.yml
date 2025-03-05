@@ -41,25 +41,33 @@ jobs:
 
       - name: Lancement de l'API en arrière-plan
         run: |
-          cd api
-          echo "Démarrage de l'API avec nohup..."
-          nohup npm start > nohup.out 2>&1 &
-          sleep 10
+          echo "Démarrage de l'API..."
+          nohup env DB_URI=$DB_URI SECRET_KEY=$SECRET_KEY PORT=8080 NODE_ENV=production node server.js > nohup.out 2>&1 &
+          sleep 15
+          
           echo "Affichage des processus Node.js actifs..."
           ps aux | grep node
+          
           echo "Vérification du démarrage de l'API..."
+          cat nohup.out || echo "Aucun log disponible"
 
-          if ! grep -q "Serveur démarré" nohup.out; then
-            echo "L'API ne semble pas avoir démarré !"
-            cat nohup.out
-            exit 1
-          fi
+          for i in {1..10}; do
+            if curl -s http://localhost:8080/catways; then
+              echo "L'API est bien démarrée !"
+              exit 0
+            fi
+            echo "Tentative $i/10 : L'API n'est pas encore prête..."
+            sleep 3
+          done
+
+          echo "L'API ne répond toujours pas après plusieurs tentatives !"
+          cat nohup.out
+          exit 1
 
       - name: Vérification des fichiers créés
         run: |
-          ls -la api
           ls -la
-
+      
       - name: Vérification des logs de l'API
         run: |
           sleep 5
@@ -69,7 +77,6 @@ jobs:
       - name: Vérification du serveur
         run: |
           echo "Attente du démarrage de l'API..."
-          /bin/bash -c '
           for i in {1..10}; do
             if curl -s http://localhost:8080/catways; then
               echo "L'API est bien démarrée !"
@@ -81,7 +88,6 @@ jobs:
           echo "L'API ne répond toujours pas après 30 secondes !"
           tail -n 50 nohup.out
           exit 1
-          '
 
       - name: Récupération du Token d'authentification pour les tests
         run: |
