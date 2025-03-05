@@ -30,6 +30,8 @@ jobs:
           cd api 
           npm start &
           sleep 10 # Attendre 10 secondes pour que le serveur démarre
+          echo "Affichage des logs du serveur..."
+          ps aux | grep node
 
       - name: 🔍 Vérification du serveur
         run: |
