@@ -76,7 +76,12 @@ exports.add = async (req, res) => {
       const newCatway = new Catway({ catwayNumber, catwayType, catwayState });
       await newCatway.save();
 
-      res.status(201).json({ message: "Catway ajouté avec succès !", catway: newCatway });
+      res.status(201).json({ 
+        message: "Catway ajouté avec succès !", 
+        _id: newCatway._id,  
+        catway: newCatway 
+    });
+    
   } catch (error) {
       res.status(500).json({ error: "Erreur lors de l'ajout du catway" });
   }
