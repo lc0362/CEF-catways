@@ -1,0 +1,75 @@
+name: Déploiement API Catways
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupération du code source
+        uses: actions/checkout@v3
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Installation des dépendances
+        run: npm install
+
+      - name: Lancement de l'API en arrière-plan
+        run: |
+          npm start &
+          sleep 5 # Attendre 5 secondes pour que le serveur démarre
+
+      - name: Récupération du Token d'authentification pour les tests
+        run: |
+          echo "Tentative d'authentification..."
+          TOKEN=$(curl -s -X POST "http://localhost:8080/auth/login" \
+          -H "Content-Type: application/json" \
+          -d '{"email": "${{ secrets.EMAIL_ADMIN }}", "password": "${{ secrets.PASSWORD_ADMIN }}"}' | jq -r .token)
+          
+          if [[ "$TOKEN" == "null" || -z "$TOKEN" ]]; then
+            echo "❌ Échec de l'authentification, aucun token récupéré."
+            exit 1
+          fi
+
+          echo "TOKEN=$TOKEN" >> $GITHUB_ENV
+          echo "🟢 Token récupéré avec succès"
+
+      - name: 🧪 Exécution des tests avec Mocha
+        run: |
+          cd api/mocha_test
+          npm test
+        env:
+          JWT_SECRET: ${{ secrets.SECRET_KEY }}
+          DB_URI: ${{ secrets.URL_MONGO }}
+          TOKEN: ${{ env.TOKEN }}
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇Récupération du code source
+        uses: actions/checkout@v3
+
+      - name: Déploiement sur le serveur
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd ../../api
+            git pull origin main
+            npm install
+            pm2 restart api
