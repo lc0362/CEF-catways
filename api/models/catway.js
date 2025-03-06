@@ -5,7 +5,7 @@ const Catway = new Schema({
     catwayNumber: {
         type: Number,
         trim: true,
-        unique: true, // le numéro de pont est unique
+        unique: true, // le numéro de catway est unique
         required: [true, "Le numéro de pont est requis"]
     },
     type : {
