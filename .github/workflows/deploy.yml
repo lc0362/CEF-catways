@@ -34,86 +34,73 @@ jobs:
           echo "NODE_ENV=production" >> env/.env
 
       - name: Vérification des variables d'environnement 
-        run: |
-          echo "Vérification des variables d'environnement..."
-          cat env/.env
+        run: cat env/.env
 
-      - name: Test manuel du démarrage de l'API
+      - name: Test de connexion à MongoDB
         run: |
-          echo "Lancement manuel de l'API pour voir les erreurs..."
+          echo "🛠 Test de connexion à MongoDB..."
+          mongo --eval "db.runCommand({ ping: 1 })" $DB_URI || echo "❌ Échec de la connexion à MongoDB"
+
+      - name: Exécution manuelle pour debug
+        run: |
+          echo "🚀 Lancement manuel de l'API pour voir les erreurs..."
           node server.js 2>&1 | tee server-error.log || exit 1
-          echo "Affichage des logs d'erreur :"
-          cat server-error.log || echo "Aucun log trouvé"
+          echo "📜 Affichage des logs d'erreur :"
+          cat server-error.log || echo "❌ Aucun log trouvé"
 
       - name: Vérification du port 8080
         run: |
-          echo "Vérification du port 8080..."
-          netstat -tulnp | grep 8080 || echo "Le port 8080 n'est pas utilisé"
+          echo "🛠 Vérification du port 8080..."
+          sudo lsof -i :8080 || echo "❌ Le port 8080 n'est pas utilisé"
 
       - name: Lancement de l'API en arrière-plan
         run: |
-          echo "Démarrage de l'API avec nohup..."
+          echo "🚀 Démarrage de l'API avec nohup..."
           nohup npm start > nohup.out 2>&1 &
           sleep 15
 
-          echo "Affichage des processus Node.js actifs..."
-          ps aux | grep node
-
-          echo "Vérification du démarrage de l'API..."
-          tail -n 50 nohup.out || echo "Aucun log disponible"
+          echo "📡 Vérification du démarrage de l'API..."
+          tail -n 50 nohup.out || echo "❌ Aucun log disponible"
 
           for i in {1..10}; do
             if curl -s http://localhost:8080/catways; then
-              echo "L'API est bien démarrée"
+              echo "✅ L'API est bien démarrée"
               exit 0
             fi
-            echo "Tentative $i/10 : L'API n'est pas encore prête"
+            echo "⏳ Tentative $i/10 : L'API n'est pas encore prête"
             sleep 3
           done
 
-          echo "L'API ne répond toujours pas après plusieurs tentatives"
+          echo "❌ L'API ne répond toujours pas après plusieurs tentatives"
           tail -n 50 nohup.out
           exit 1
 
       - name: Vérification des fichiers créés
-        run: ls -la
+        run: ls -R
 
       - name: Vérification des logs de l'API
-        run: |
-          sleep 5
-          echo "Logs récents de l'API :"
-          tail -n 50 nohup.out || echo "Aucun log trouvé."
+        run: tail -n 50 nohup.out || echo "❌ Aucun log trouvé."
 
       - name: Vérification du serveur
         run: |
-          echo "Attente du démarrage de l'API..."
-          for i in {1..10}; do
-            if curl -s http://localhost:8080/catways; then
-              echo "L'API est bien démarrée"
-              exit 0
-            fi
-            echo "Tentative $i/10 : L'API n'est pas encore prête"
-            sleep 3
-          done
-          echo "L'API ne répond toujours pas après 30 secondes"
-          tail -n 50 nohup.out
-          exit 1
+          echo "🔎 Vérification du serveur..."
+          curl -s http://localhost:8080 || echo "❌ Le serveur n'a pas répondu"
 
       - name: Récupération du Token d'authentification pour les tests
         run: |
-          echo "Tentative d'authentification..."
+          echo "🔑 Tentative d'authentification..."
           TOKEN=$(curl -s -X POST "http://localhost:8080/auth/login" \
           -H "Content-Type: application/json" \
           -d "{\"email\": \"${{ secrets.EMAIL_ADMIN }}\", \"password\": \"${{ secrets.PASSWORD_ADMIN }}\"}" | jq -r .token)
 
           if [[ -z "$TOKEN" || "$TOKEN" == "null" ]]; then
-            echo "Échec de l'authentification"
+            echo "❌ Échec de l'authentification"
             curl -s -X POST "http://localhost:8080/auth/login" -H "Content-Type: application/json" -d "{\"email\": \"${{ secrets.EMAIL_ADMIN }}\", \"password\": \"${{ secrets.PASSWORD_ADMIN }}\"}"
             exit 1
           fi
           
           echo "TOKEN=$TOKEN" >> $GITHUB_ENV
-          echo "Token récupéré avec succès"
+          echo "✅ Token récupéré avec succès"
 
       - name: Exécution des tests avec Mocha
         run: |
