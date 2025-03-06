@@ -27,13 +27,18 @@ jobs:
 
       - name: Installation de MongoDB Shell
         run: |
-          sudo apt update
-          sudo apt install -y curl
-          curl -fsSL https://pgp.mongodb.com/server-6.0.asc | sudo tee /usr/share/keyrings/mongodb-server-key.asc
+          curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | sudo tee /usr/share/keyrings/mongodb-server-key.asc
           echo "deb [signed-by=/usr/share/keyrings/mongodb-server-key.asc] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
           sudo apt update
           sudo apt install -y mongodb-mongosh
       
+      
+      - name: Afficher l'IP publique
+        run: |
+            echo "🌍 IP publique du runner GitHub Actions :"
+            curl ifconfig.me
+        
+        
       - name: Configuration des variables d'environnement
         run: |
           echo "DB_URI=${{ secrets.URL_MONGO }}" >> $GITHUB_ENV
@@ -45,6 +50,12 @@ jobs:
         run: |
           echo "Vérification des variables d'environnement..."
           env | grep -E 'DB_URI|PORT|SECRET_KEY|NODE_ENV'
+
+      - name: Afficher l'IP publique du runner GitHub Actions
+        run: |
+            echo "🌍 IP publique du runner GitHub Actions :"
+            curl ifconfig.me
+        
 
       - name: Test de connexion à MongoDB
         run: |
@@ -62,18 +73,18 @@ jobs:
 
       - name: Test de connexion à MongoDB avec mongosh
         run: |
-          echo "🔍 Test de connexion MongoDB via mongosh..."
-          if ! echo "db.runCommand({ ping: 1 })" | mongosh "$DB_URI" --quiet; then
-            echo "❌ Impossible de se connecter à MongoDB via mongosh"
-            exit 1
-          fi
-          echo "✅ Connexion MongoDB réussie via mongosh."
-
-      - name: Logs MongoDB après test
-        run: |
-            echo "📜 Logs récents de MongoDB (s'il y en a) :"
-            cat /var/log/mongodb/mongod.log || echo "❌ Aucun log MongoDB trouvé"
-        
+              echo "🔍 Test de connexion MongoDB via mongosh..."
+              RESPONSE=$(echo "db.runCommand({ ping: 1 })" | mongosh "$DB_URI" --quiet 2>&1)
+              
+              if echo "$RESPONSE" | grep -q "ok: 1"; then
+                echo "✅ Connexion MongoDB réussie via mongosh."
+              else
+                echo "❌ Impossible de se connecter à MongoDB via mongosh."
+                echo "🔍 Détails de l'erreur :"
+                echo "$RESPONSE"
+                exit 1
+              fi
+          
 
       - name: Vérification du port 8080 avant lancement
         run: |
@@ -137,6 +148,25 @@ jobs:
           echo "❌ L'API ne répond toujours pas après 30 secondes"
           tail -n 50 nohup.out
           exit 1
+
+      - name: Vérification de l'API après lancement
+        run: |
+            echo "⏳ Attente de 5 secondes avant vérification..."
+            sleep 5
+            echo "⏳ Vérification du démarrage de l'API..."
+            for i in {1..15}; do
+              if curl -s http://localhost:8080/catways; then
+                echo "✅ L'API est bien démarrée"
+                exit 0
+              fi
+              echo "⏳ Tentative $i/15 : L'API n'est pas encore prête"
+              tail -n 10 nohup.out || echo "❌ Pas de logs API disponibles"
+              sleep 3
+            done
+            echo "❌ L'API ne répond toujours pas après 45 secondes"
+            exit 1
+        
+        
 
       - name: Récupération du Token d'authentification pour les tests
         run: |
