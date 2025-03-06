@@ -25,6 +25,12 @@ jobs:
       - name: Installation des dépendances
         run: npm install
 
+      - name: Installation de MongoDB Shell
+        run: |
+          sudo apt update
+          sudo apt install -y mongodb-clients
+      
+
       - name: Configuration des variables d'environnement
         run: |
           echo "DB_URI=${{ secrets.URL_MONGO }}" >> $GITHUB_ENV
@@ -39,12 +45,32 @@ jobs:
 
       - name: Test de connexion à MongoDB
         run: |
-          echo "🛠 Test de connexion à MongoDB..."
-          if ! nc -z $(echo $DB_URI | sed 's|mongodb://||g' | cut -d'/' -f1) 27017; then
-            echo "❌ MongoDB n'est pas accessible !"
+            echo "🛠 Test de connexion à MongoDB..."
+            if echo "$DB_URI" | grep -q "mongodb+srv"; then
+              echo "⚠️ Connexion SRV détectée, le test simple est ignoré."
+            else
+              MONGO_HOST=$(echo "$DB_URI" | sed -E 's|mongodb://([^/]+).*|\1|')
+              if ! nc -z $MONGO_HOST 27017; then
+                echo "❌ MongoDB n'est pas accessible !"
+                exit 1
+              fi
+            fi
+            echo "✅ MongoDB semble accessible."
+
+      - name: Test de connexion à MongoDB avec mongosh
+        run: |
+          echo "🔍 Test de connexion MongoDB via mongosh..."
+          if ! echo "db.runCommand({ ping: 1 })" | mongosh "$DB_URI" --quiet; then
+            echo "❌ Impossible de se connecter à MongoDB via mongosh"
             exit 1
           fi
-          echo "✅ MongoDB répond bien !"
+          echo "✅ Connexion MongoDB réussie via mongosh."
+
+      - name: Logs MongoDB après test
+        run: |
+            echo "📜 Logs récents de MongoDB (s'il y en a) :"
+            cat /var/log/mongodb/mongod.log || echo "❌ Aucun log MongoDB trouvé"
+        
 
       - name: Vérification du port 8080 avant lancement
         run: |
