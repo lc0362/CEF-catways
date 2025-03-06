@@ -25,13 +25,6 @@ jobs:
       - name: Installation des dépendances
         run: npm install
 
-      - name: Configuration des variables d'environnement
-        run: |
-          echo "DB_URI=${{ secrets.URL_MONGO }}" >> $GITHUB_ENV
-          echo "PORT=8080" >> $GITHUB_ENV
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
-          echo "NODE_ENV=production" >> $GITHUB_ENV
-
       - name: Écriture des variables d'environnement dans un fichier .env
         run: |
           mkdir -p env
@@ -45,19 +38,12 @@ jobs:
           echo "Vérification des variables d'environnement..."
           cat env/.env
 
-      - name: Test manuel du démarrage de l'API pour voir les erreurs
-        run: |
-          echo "Lancement manuel de l'API pour voir les erreurs..."
-          node server.js || exit 1
-          echo "Affichage des logs d'erreur :"
-          tail -n 50 nohup.out || echo "Aucun log trouvé"
-
-      - name: Lancement de l'API en arrière-plan
+      - name: Démarrage de l'API en arrière-plan avec nohup
         run: |
           echo "Démarrage de l'API avec nohup..."
           nohup npm start > nohup.out 2>&1 &
           sleep 15
-
+          
           echo "Affichage des processus Node.js actifs..."
           ps aux | grep node
 

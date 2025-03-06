@@ -1,6 +1,11 @@
+// Charger les variables d'environnement si elles ne sont pas définies
 if (!process.env.DB_URI) {
     require('dotenv').config({ path: './env/.env' });
 }
+
+const http = require('http');
+const app = require('./api/app');
+const { initClientDbConnection } = require('./api/db/mongo');
 
 // Vérification des variables d'environnement
 console.log("Chargement des variables d'environnement...");
@@ -14,15 +19,12 @@ if (!process.env.DB_URI || !process.env.SECRET_KEY || !process.env.PORT) {
     process.exit(1);
 }
 
-// Importe la fonction d'initialisation de MongoDB
-const { initClientDbConnection } = require('./api/db/mongo');
-const http = require('http');
-const app = require('./api/app');
-
-// Initialisation de la connexion MongoDB avec gestion des erreurs
+// Tentative de connexion à MongoDB
+console.log("Tentative de connexion à MongoDB...");
 initClientDbConnection()
     .then(() => {
         console.log("Connexion MongoDB réussie.");
+
         const port = process.env.PORT || 8080;
         const server = http.createServer(app);
 
@@ -32,5 +34,5 @@ initClientDbConnection()
     })
     .catch(err => {
         console.error("Erreur lors de la connexion à MongoDB :", err);
-        process.exit(1); // Arrêter l'exécution en cas d'échec
+        process.exit(1);
     });
