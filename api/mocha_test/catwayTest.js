@@ -60,7 +60,7 @@ describe("🛠️ Tests API Catways (avec authentification)", function () {
     it("✅ Ajouter un catway", function (done) {
         const postData = JSON.stringify({
             catwayNumber: 99,
-            catwayType: "long",
+            type: "long",
             catwayState: "Libre",
         });
 
