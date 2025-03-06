@@ -39,24 +39,19 @@ jobs:
           echo "SECRET_KEY=$SECRET_KEY"
           echo "PORT=$PORT"
 
-      - name: Test de connexion à MongoDB
-        run: |
-          echo "Vérification de la connexion MongoDB..."
-          nc -zv $(echo $DB_URI | sed 's/mongodb:\/\/\([^:/]*\).*/\1/') 27017 || echo "Connexion MongoDB échouée"
-
-      - name: Lancement manuel de l'API pour voir les erreurs
+      - name: Test du démarrage manuel pour voir les erreurs
         run: |
           echo "Lancement manuel de l'API pour voir les erreurs..."
           node server.js || true
           echo "Affichage des logs d'erreur :"
-          tail -n 50 nohup.out || echo "Aucun log trouvé"
+          cat nohup.out || echo "Aucun log trouvé"
 
       - name: Lancement de l'API en arrière-plan
         run: |
-          echo "Démarrage de l'API..."
-          nohup env DB_URI=$DB_URI SECRET_KEY=$SECRET_KEY PORT=8080 NODE_ENV=production node server.js > nohup.out 2>&1 &
+          echo "Démarrage de l'API avec nohup..."
+          nohup npm start > nohup.out 2>&1 &
           sleep 15
-          
+
           echo "Affichage des processus Node.js actifs..."
           ps aux | grep node
 
@@ -83,7 +78,7 @@ jobs:
         run: |
           sleep 5
           echo "Logs récents de l'API :"
-          tail -n 50 nohup.out || echo "Aucun log trouvé"
+          tail -n 50 nohup.out || echo "Aucun log trouvé."
 
       - name: Vérification du serveur
         run: |
