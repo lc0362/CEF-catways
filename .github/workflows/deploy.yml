@@ -35,16 +35,14 @@ jobs:
       - name: Vérification des variables d'environnement 
         run: |
           echo "Vérification des variables d'environnement..."
-          echo "DB_URI=$DB_URI"
-          echo "SECRET_KEY=$SECRET_KEY"
-          echo "PORT=$PORT"
+          env | grep -E 'DB_URI|PORT|SECRET_KEY|NODE_ENV'
 
-      - name: Test du démarrage manuel pour voir les erreurs
+      - name: Lancement manuel du serveur pour debug
         run: |
           echo "Lancement manuel de l'API pour voir les erreurs..."
           node server.js || true
           echo "Affichage des logs d'erreur :"
-          cat nohup.out || echo "Aucun log trouvé"
+          tail -n 50 nohup.out || echo "Aucun log trouvé"
 
       - name: Lancement de l'API en arrière-plan
         run: |
