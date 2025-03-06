@@ -25,7 +25,7 @@ jobs:
       - name: Installation des dépendances
         run: npm install
 
-      - name: Écriture des variables d'environnement dans un fichier .env
+      - name: Configuration des variables d'environnement
         run: |
           mkdir -p env
           echo "DB_URI=${{ secrets.URL_MONGO }}" > env/.env
@@ -38,12 +38,24 @@ jobs:
           echo "Vérification des variables d'environnement..."
           cat env/.env
 
-      - name: Démarrage de l'API en arrière-plan avec nohup
+      - name: Test manuel du démarrage de l'API
+        run: |
+          echo "Lancement manuel de l'API pour voir les erreurs..."
+          node server.js 2>&1 | tee server-error.log || exit 1
+          echo "Affichage des logs d'erreur :"
+          cat server-error.log || echo "Aucun log trouvé"
+
+      - name: Vérification du port 8080
+        run: |
+          echo "Vérification du port 8080..."
+          netstat -tulnp | grep 8080 || echo "Le port 8080 n'est pas utilisé"
+
+      - name: Lancement de l'API en arrière-plan
         run: |
           echo "Démarrage de l'API avec nohup..."
           nohup npm start > nohup.out 2>&1 &
           sleep 15
-          
+
           echo "Affichage des processus Node.js actifs..."
           ps aux | grep node
 
