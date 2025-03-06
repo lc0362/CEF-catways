@@ -5,7 +5,7 @@ console.log("DB_URI:", process.env.DB_URI ? "✅ Définie" : "❌ Non définie")
 console.log("PORT:", process.env.PORT || "8080 (par défaut)");
 console.log("SECRET_KEY:", process.env.SECRET_KEY ? "✅ Définie" : "❌ Non définie");
 
-// Vérifier si toutes les variables sont bien définies
+// Vérification des variables requises
 if (!process.env.DB_URI || !process.env.SECRET_KEY || !process.env.PORT) {
     console.error("🚨 Erreur: Une ou plusieurs variables d'environnement sont manquantes.");
     process.exit(1);
@@ -15,7 +15,7 @@ const http = require('http');
 const app = require('./api/app');
 const { initClientDbConnection } = require('./api/db/mongo');
 
-// Capture des erreurs non gérées pour éviter les crashs silencieux
+// Capture des erreurs pour éviter les crashs silencieux
 process.on('uncaughtException', (err) => {
     console.error("🔥 Une erreur non gérée a été détectée :", err);
     process.exit(1);
@@ -28,7 +28,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 console.log("🔄 Tentative de connexion à MongoDB...");
 
-// Initialisation de MongoDB avec logs d'erreur détaillés
+// Initialisation de MongoDB avec logs détaillés
 initClientDbConnection()
     .then(() => {
         console.log("✅ Connexion MongoDB réussie.");

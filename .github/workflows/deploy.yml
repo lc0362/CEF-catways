@@ -27,31 +27,36 @@ jobs:
 
       - name: Configuration des variables d'environnement
         run: |
-          mkdir -p env
-          echo "DB_URI=${{ secrets.URL_MONGO }}" > env/.env
-          echo "PORT=8080" >> env/.env
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> env/.env
-          echo "NODE_ENV=production" >> env/.env
+          echo "DB_URI=${{ secrets.URL_MONGO }}" >> $GITHUB_ENV
+          echo "PORT=8080" >> $GITHUB_ENV
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          echo "NODE_ENV=production" >> $GITHUB_ENV
 
       - name: Vérification des variables d'environnement 
-        run: cat env/.env
+        run: |
+          echo "Vérification des variables d'environnement..."
+          env | grep -E 'DB_URI|PORT|SECRET_KEY|NODE_ENV'
 
       - name: Test de connexion à MongoDB
         run: |
           echo "🛠 Test de connexion à MongoDB..."
-          mongo --eval "db.runCommand({ ping: 1 })" $DB_URI || echo "❌ Échec de la connexion à MongoDB"
+          if ! nc -z $(echo $DB_URI | sed 's|mongodb://||g' | cut -d'/' -f1) 27017; then
+            echo "❌ MongoDB n'est pas accessible !"
+            exit 1
+          fi
+          echo "✅ MongoDB répond bien !"
 
-      - name: Exécution manuelle pour debug
+      - name: Vérification du port 8080 avant lancement
         run: |
-          echo "🚀 Lancement manuel de l'API pour voir les erreurs..."
-          node server.js 2>&1 | tee server-error.log || exit 1
-          echo "📜 Affichage des logs d'erreur :"
-          cat server-error.log || echo "❌ Aucun log trouvé"
+          echo "📡 Vérification du port 8080..."
+          netstat -tulnp | grep 8080 || echo "⚠️ Le port 8080 n'est pas utilisé avant lancement"
 
-      - name: Vérification du port 8080
+      - name: Exécution manuelle en mode debug
         run: |
-          echo "🛠 Vérification du port 8080..."
-          sudo lsof -i :8080 || echo "❌ Le port 8080 n'est pas utilisé"
+          echo "🚀 Lancement manuel de l'API avec logs détaillés..."
+          node server.js 2>&1 | tee server-debug.log || exit 1
+          echo "📜 Affichage des logs de debug :"
+          cat server-debug.log || echo "❌ Aucun log trouvé"
 
       - name: Lancement de l'API en arrière-plan
         run: |
@@ -75,16 +80,34 @@ jobs:
           tail -n 50 nohup.out
           exit 1
 
+      - name: Vérification du port 8080 après lancement
+        run: |
+          echo "📡 Vérification du port 8080 après lancement..."
+          netstat -tulnp | grep 8080 || echo "⚠️ Le port 8080 n'est toujours pas utilisé après lancement"
+
       - name: Vérification des fichiers créés
-        run: ls -R
+        run: ls -la
 
       - name: Vérification des logs de l'API
-        run: tail -n 50 nohup.out || echo "❌ Aucun log trouvé."
+        run: |
+          sleep 5
+          echo "📜 Logs récents de l'API :"
+          tail -n 50 nohup.out || echo "❌ Aucun log trouvé."
 
       - name: Vérification du serveur
         run: |
-          echo "🔎 Vérification du serveur..."
-          curl -s http://localhost:8080 || echo "❌ Le serveur n'a pas répondu"
+          echo "⏳ Attente du démarrage de l'API..."
+          for i in {1..10}; do
+            if curl -s http://localhost:8080/catways; then
+              echo "✅ L'API est bien démarrée"
+              exit 0
+            fi
+            echo "⏳ Tentative $i/10 : L'API n'est pas encore prête"
+            sleep 3
+          done
+          echo "❌ L'API ne répond toujours pas après 30 secondes"
+          tail -n 50 nohup.out
+          exit 1
 
       - name: Récupération du Token d'authentification pour les tests
         run: |
@@ -95,7 +118,6 @@ jobs:
 
           if [[ -z "$TOKEN" || "$TOKEN" == "null" ]]; then
             echo "❌ Échec de l'authentification"
-            curl -s -X POST "http://localhost:8080/auth/login" -H "Content-Type: application/json" -d "{\"email\": \"${{ secrets.EMAIL_ADMIN }}\", \"password\": \"${{ secrets.PASSWORD_ADMIN }}\"}"
             exit 1
           fi
           
