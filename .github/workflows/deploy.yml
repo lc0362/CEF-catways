@@ -93,10 +93,11 @@ jobs:
 
       - name: Exécution manuelle en mode debug
         run: |
-          echo "🚀 Lancement manuel de l'API avec logs détaillés..."
-          node server.js 2>&1 | tee server-debug.log || exit 1
-          echo "📜 Affichage des logs de debug :"
-          cat server-debug.log || echo "❌ Aucun log trouvé"
+            echo "🚀 Lancement manuel de l'API avec logs détaillés..."
+            nohup node server.js > server-debug.log 2>&1 & sleep 5
+            echo "📜 Affichage des logs de debug :"
+            tail -n 50 server-debug.log || echo "❌ Aucun log trouvé"
+        
 
       - name: Lancement de l'API en arrière-plan
         run: |
