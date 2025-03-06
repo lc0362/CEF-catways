@@ -28,9 +28,12 @@ jobs:
       - name: Installation de MongoDB Shell
         run: |
           sudo apt update
-          sudo apt install -y mongodb-clients
+          sudo apt install -y curl
+          curl -fsSL https://pgp.mongodb.com/server-6.0.asc | sudo tee /usr/share/keyrings/mongodb-server-key.asc
+          echo "deb [signed-by=/usr/share/keyrings/mongodb-server-key.asc] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+          sudo apt update
+          sudo apt install -y mongodb-mongosh
       
-
       - name: Configuration des variables d'environnement
         run: |
           echo "DB_URI=${{ secrets.URL_MONGO }}" >> $GITHUB_ENV
