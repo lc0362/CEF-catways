@@ -82,7 +82,7 @@
         <p>Complétez les 3 champs : 
             <ul>
                 <li><b>catwayNumber</b> (doit être un numéro unique)</li>
-                <li><b>catwayType</b> ["long" ou "short"] avec une tolérance pour la casse</li>
+                <li><b>type</b> ["long" ou "short"] avec une tolérance pour la casse</li>
                 <li><b>catwayState</b> maximum 100 caractères de long</li>
             </ul>
         </p>
@@ -97,7 +97,7 @@
         <p>Avec le ou les 3 champs modifiés : 
             <ul>
                 <li><b>catwayNumber</b> (doit être un numéro unique)</li>
-                <li><b>catwayType</b> ["long" ou "short"] avec une tolérance pour la casse</li>
+                <li><b>type</b> ["long" ou "short"] avec une tolérance pour la casse</li>
                 <li><b>catwayState</b> maximum 100 caractères de long</li>
             </ul>
         </p>
@@ -123,7 +123,7 @@
                     <li><b>checkIn</b> et <b>checkIn</b> : date sous le format ISO 8601 (YYYY-MM-DDT10:00:00Z)</li>
                 </ul>
         </p>
-        <p>Le champ catwayNumber est automatiquement complété via l’url. Cliquez sur Send.</p>
+        <p>Cliquez sur Send. La réservation est créée sur le catway dont l'id est indiqué dans l'url.</p>
 
         <div><a href="#top"><button class="btn-top">Remonter en haut de la page</button></a></div>
                 
@@ -167,7 +167,6 @@
         <ul class="glossaire"> 
             <strong>Concepts métier</strong>
         <ul> 
-            <li><strong>API REST</strong> (Representational State Transfer) : Architecture permettant la communication entre le frontend et le backend via des requêtes HTTP (<code>GET</code>, <code>POST</code>, <code>PATCH</code>, <code>DELETE</code>).</li> 
             <li><strong>Catway</strong> : Emplacement destiné à l'amarrage d’un bateau. Il est identifié par un ID unique au sein de la base de données.</li> 
             <li><strong>Check-In, Check-Out</strong> : Date et heure prévues d’arrivée et de départ du bateau au catway (format ISO <code>YYYY-MM-DDTHH:mm:ssZ</code>).</li> 
             <li><strong>État du Catway</strong> : Indicateur de l'état du catway (ex. <code>Libre</code>, <code>Occupé</code>, <code>Réservé</code>, <code>En maintenance</code>).</li> 
@@ -179,6 +178,7 @@
         <ul class="glossaire"> 
             <strong>Outils techniques</strong>
         <ul> 
+            <li><strong>API REST</strong> (Representational State Transfer) : Architecture permettant la communication entre le frontend et le backend via des requêtes HTTP (<code>GET</code>, <code>POST</code>, <code>PATCH</code>, <code>DELETE</code>).</li> 
             <li><strong>Express.js</strong> : Framework backend pour Node.js permettant de créer des applications web et APIs rapidement avec un système de routage et de gestion des requêtes HTTP.</li> 
             <li><strong>Fetch API</strong> : Méthode JavaScript utilisée côté frontend pour envoyer des requêtes HTTP à l'API backend.</li> 
             <li><strong>JSON</strong> (JavaScript Object Notation) : Format d’échange de données utilisé entre le frontend et le backend.</li> 
