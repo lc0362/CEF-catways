@@ -59,12 +59,12 @@ exports.add = async (req, res) => {
   try {
       console.log("📌 Données reçues :", req.body);
 
-      let { catwayNumber, catwayType, catwayState } = req.body;
+      let { catwayNumber, type, catwayState } = req.body;
 
-      // Convertir catwayType en minuscule
-      catwayType = catwayType.toLowerCase();
+      // Convertir Type en minuscule
+      type = type.toLowerCase();
 
-      if (!catwayNumber || !catwayType || !catwayState) {
+      if (!catwayNumber || !type || !catwayState) {
           return res.status(400).json({ error: "Tous les champs sont obligatoires" });
       }
 
@@ -73,7 +73,7 @@ exports.add = async (req, res) => {
           return res.status(400).json({ error: "Ce catway existe déjà" });
       }
 
-      const newCatway = new Catway({ catwayNumber, catwayType, catwayState });
+      const newCatway = new Catway({ catwayNumber, type, catwayState });
       await newCatway.save();
 
       res.status(201).json({ 

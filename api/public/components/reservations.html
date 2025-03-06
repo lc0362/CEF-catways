@@ -26,61 +26,62 @@
                         "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 });
-
+    
                 const reservations = await response.json();
                 const reservationList = document.getElementById("reservationList");
                 reservationList.innerHTML = ""; 
-
+    
                 if (response.ok) {
                     reservations.forEach(reservation => {
                         // Création d'un conteneur div pour chaque réservation
                         const reservationDiv = document.createElement("div");
                         reservationDiv.classList.add("reservation-item");
-
+    
                         // Titre avec l'ID de la réservation
                         const title = document.createElement("h2");
                         title.textContent = `Réservation ID: ${reservation._id}`;
-
+    
+                        // Vérification que catwayId est un objet avant d'accéder aux propriétés
+                        const catway = reservation.catwayId && typeof reservation.catwayId === "object" 
+                            ? reservation.catwayId 
+                            : { _id: "Non défini", catwayNumber: "Inconnu" };
+    
                         // Paragraphe avec les détails de la réservation
                         const details = document.createElement("p");
-                        details.innerHTML = ` <p><strong>Catway ID:</strong> ${reservation.catwayId ? reservation.catwayId._id || reservation.catwayId : "Non défini"} </p> 
-                                              <p><strong>Check-in:</strong> ${new Date(reservation.checkIn).toLocaleDateString()} </p>
-                                              <p><strong>Check-out:</strong> ${new Date(reservation.checkOut).toLocaleDateString()} </p>`;
-
+                        details.innerHTML = `
+                            <p><strong>Catway ID:</strong> ${catway._id} </p> 
+                            <p><strong>Numéro de catway:</strong> #${catway.catwayNumber} </p>
+                            <p><strong>Check-in:</strong> ${new Date(reservation.checkIn).toLocaleDateString()} </p>
+                            <p><strong>Check-out:</strong> ${new Date(reservation.checkOut).toLocaleDateString()} </p>
+                        `;
+    
                         // Bouton "Voir détails" qui redirige vers /details/{id}
                         const detailsButton = document.createElement("button");
                         detailsButton.textContent = "Voir détails";
                         detailsButton.onclick = function() {
                             window.location.href = `/reservations/details/${reservation._id}`;
                         };
-
+    
                         // Ajouter les éléments créés dans la div
                         reservationDiv.appendChild(title);
                         reservationDiv.appendChild(details);
                         reservationDiv.appendChild(detailsButton);
-
+    
                         // Ajouter la div au conteneur principal
                         reservationList.appendChild(reservationDiv);
                     });
                 } else {
                     reservationList.innerHTML = `<p>❌ Erreur : ${reservations.error || "Impossible de charger les réservations"}</p>`;
                 }
-
+    
             } catch (error) {
                 document.getElementById("reservationList").innerHTML = `<p>❌ Erreur inattendue : ${error.message}</p>`;
             }
         }
-
-        // Fonction pour déconnecter l'utilisateur
-        function logout() {
-            localStorage.removeItem("token");
-            window.location.href = "/";
-        }
-
+    
         // Charger les réservations au chargement de la page
         document.addEventListener("DOMContentLoaded", fetchReservations);
     </script>
-
-
+ 
 </body>
 </html>
