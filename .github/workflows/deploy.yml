@@ -41,16 +41,15 @@ jobs:
         
       - name: Configuration des variables d'environnement
         run: |
-              mkdir -p env
-              echo "URL_MONGO=${{ secrets.URL_MONGO }}" > env/.env
-              echo "PORT=8080" >> env/.env
-              echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> env/.env
+              echo "URL_MONGO=${{ secrets.URL_MONGO }}" >> $GITHUB_ENV
+              echo "PORT=8080" >> $GITHUB_ENV
+              echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
           
-
       - name: Vérification des variables d'environnement 
         run: |
-          echo "Vérification des variables d'environnement..."
-          env | grep -E 'URL_MONGO|PORT|SECRET_KEY'
+                echo "Vérification des variables d'environnement..."
+                printenv | grep -E 'URL_MONGO|PORT|SECRET_KEY' || echo "⚠️ Certaines variables ne sont pas définies"
+            
 
       - name: Afficher l'IP publique du runner GitHub Actions
         run: |
