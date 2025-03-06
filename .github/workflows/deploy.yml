@@ -45,13 +45,12 @@ jobs:
               echo "URL_MONGO=${{ secrets.URL_MONGO }}" > env/.env
               echo "PORT=8080" >> env/.env
               echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> env/.env
-              echo "NODE_ENV=production" >> env/.env
           
 
       - name: Vérification des variables d'environnement 
         run: |
           echo "Vérification des variables d'environnement..."
-          env | grep -E 'URL_MONGO|PORT|SECRET_KEY|NODE_ENV'
+          env | grep -E 'URL_MONGO|PORT|SECRET_KEY'
 
       - name: Afficher l'IP publique du runner GitHub Actions
         run: |
