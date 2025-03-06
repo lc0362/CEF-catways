@@ -41,15 +41,17 @@ jobs:
         
       - name: Configuration des variables d'environnement
         run: |
-          echo "DB_URI=${{ secrets.URL_MONGO }}" >> $GITHUB_ENV
-          echo "PORT=8080" >> $GITHUB_ENV
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
-          echo "NODE_ENV=production" >> $GITHUB_ENV
+              mkdir -p env
+              echo "URL_MONGO=${{ secrets.URL_MONGO }}" > env/.env
+              echo "PORT=8080" >> env/.env
+              echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> env/.env
+              echo "NODE_ENV=production" >> env/.env
+          
 
       - name: Vérification des variables d'environnement 
         run: |
           echo "Vérification des variables d'environnement..."
-          env | grep -E 'DB_URI|PORT|SECRET_KEY|NODE_ENV'
+          env | grep -E 'URL_MONGO|PORT|SECRET_KEY|NODE_ENV'
 
       - name: Afficher l'IP publique du runner GitHub Actions
         run: |
@@ -60,10 +62,10 @@ jobs:
       - name: Test de connexion à MongoDB
         run: |
             echo "🛠 Test de connexion à MongoDB..."
-            if echo "$DB_URI" | grep -q "mongodb+srv"; then
+            if echo "$URL_MONGO" | grep -q "mongodb+srv"; then
               echo "⚠️ Connexion SRV détectée, le test simple est ignoré."
             else
-              MONGO_HOST=$(echo "$DB_URI" | sed -E 's|mongodb://([^/]+).*|\1|')
+              MONGO_HOST=$(echo "$URL_MONGO" | sed -E 's|mongodb://([^/]+).*|\1|')
               if ! nc -z $MONGO_HOST 27017; then
                 echo "❌ MongoDB n'est pas accessible !"
                 exit 1
@@ -74,7 +76,7 @@ jobs:
       - name: Test de connexion à MongoDB avec mongosh
         run: |
               echo "🔍 Test de connexion MongoDB via mongosh..."
-              RESPONSE=$(echo "db.runCommand({ ping: 1 })" | mongosh "$DB_URI" --quiet 2>&1)
+              RESPONSE=$(echo "db.runCommand({ ping: 1 })" | mongosh "$URL_MONGO" --quiet 2>&1)
               
               if echo "$RESPONSE" | grep -q "ok: 1"; then
                 echo "✅ Connexion MongoDB réussie via mongosh."
@@ -189,7 +191,7 @@ jobs:
           npm test
         env:
           JWT_SECRET: ${{ secrets.SECRET_KEY }}
-          DB_URI: ${{ secrets.URL_MONGO }}
+          URL_MONGO: ${{ secrets.URL_MONGO }}
           TOKEN: ${{ env.TOKEN }}
 
   deploy:
