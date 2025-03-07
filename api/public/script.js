@@ -141,10 +141,10 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
 
             const catwayNumber = document.getElementById("catwayNumber").value;
-            const catwayType = document.getElementById("catwayType").value;
+            const type = document.getElementById("type").value;
             const catwayState = document.getElementById("catwayState").value;
 
-            const data = await fetchAPI("/catways/add", "POST", { catwayNumber, catwayType, catwayState });
+            const data = await fetchAPI("/catways/add", "POST", { catwayNumber, type, catwayState });
             if (data.message) {
                 displayMessage("createCatwayMessage", "Catway créé");
                 createCatwayForm.reset();
